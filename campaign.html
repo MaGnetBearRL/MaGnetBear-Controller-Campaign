@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bring MaGnetBear Back Online</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="A completely serious, definitely not unhinged campaign to return MaGnetBear’s controller so ranked can resume." />
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="badge">WARRANTY ARC</div>
+      <h1>Bring MaGnetBear back online</h1>
+      <p class="sub">
+        My AIM controller is away getting repaired. They said ~3 weeks.
+        I’m handling this with maturity and grace (lie).
+      </p>
+    </header>
+
+    <section class="panel" id="top">
+      <div class="grid">
+        <div class="card">
+          <h2>Status</h2>
+          <p class="big" id="statusText">Controller: In witness protection</p>
+          <p class="muted">Shipped: <span id="shipDateText">—</span></p>
+          <p class="muted">Estimated return: <span id="etaDateText">—</span></p>
+        </div>
+
+        <div class="card">
+          <h2>Countdown</h2>
+          <p class="countdown" id="countdown">—</p>
+          <p class="muted">This is comedy. Please be normal in the comments.</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn primary" id="signBtn" href="#" target="_blank" rel="noopener">Sign the petition</a>
+        <button class="btn" id="shareBtn" type="button">Copy link to share</button>
+        <a class="btn ghost" href="#updates">See updates</a>
+        <a class="btn ghost" href="#signatureWall">Signatures</a>
+        <a class="btn ghost" href="#contact">Contact</a>
+      </div>
+
+      <div class="fineprint">
+        <p><strong>House rules:</strong> No harassment. No spam. No dogpiling. If you post anything, do it once and keep it respectful.</p>
+        <p class="muted">
+          AIM Controllers is not affiliated with this page. This is a fan-made joke campaign by MaGnetBear.
+          Form submissions are moderated; only approved names appear publicly.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel" id="updates">
+      <h2>Updates</h2>
+      <div class="timeline">
+        <div class="event">
+          <div class="dot"></div>
+          <div>
+            <p class="eventTitle">Day 0: The Sendoff</p>
+            <p class="muted">A dramatic farewell. Bubble wrap. A single tear. Probably.</p>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="dot"></div>
+          <div>
+            <p class="eventTitle">Day 7: Bargaining Phase</p>
+            <p class="muted">“I will be calm. I will be normal.” (He won’t.)</p>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="dot"></div>
+          <div>
+            <p class="eventTitle">Day 14: Ranked Withdrawal</p>
+            <p class="muted">Symptoms may include: whiffing, coping, and blaming solo queue.</p>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="dot"></div>
+          <div>
+            <p class="eventTitle">Day 21: Reunion (Manifesting)</p>
+            <p class="muted">If it returns: montage. If not: villain origin story.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="messageGen">
+      <h2>Message generator (optional)</h2>
+      <p class="muted">
+        If you want to do more than signing, generate a one-time respectful message. Keep it classy: no spam, no dogpiling.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h3 class="subhead">1) Pick the vibe</h3>
+
+          <label class="fieldLabel" for="mg_vibe">Tone</label>
+          <select id="mg_vibe" class="field">
+            <option value="funny">Funny / supportive</option>
+            <option value="serious">Serious / supportive</option>
+            <option value="chaotic">Chaotic good (still polite)</option>
+            <option value="short">Super short</option>
+          </select>
+
+          <label class="fieldLabel" for="mg_support">How you feel about MaGnetBear</label>
+          <select id="mg_support" class="field">
+            <option value="fan">I actually like his content</option>
+            <option value="new">I just found him but I’m invested</option>
+            <option value="friend">I know him (sadly) and he needs his controller back</option>
+            <option value="neutral">I’m neutral, but this bit is hilarious</option>
+          </select>
+
+          <label class="fieldLabel" for="mg_story">What should AIM know?</label>
+          <select id="mg_story" class="field">
+            <option value="warranty">The warranty arc is a bit — no rush</option>
+            <option value="ranked">He’s spiraling in ranked without it</option>
+            <option value="rumble">Rumble is suffering without that controller</option>
+            <option value="reunion">We need the reunion montage</option>
+          </select>
+
+          <label class="fieldLabel" for="mg_interest">AIM interest</label>
+          <select id="mg_interest" class="field">
+            <option value="considering">I’m considering AIM because of this</option>
+            <option value="curious">I’m curious and browsing</option>
+            <option value="own">I already own one / have experience</option>
+            <option value="later">Maybe later (still love the bit)</option>
+          </select>
+
+          <label class="fieldLabel" for="mg_platform">Platform</label>
+          <select id="mg_platform" class="field">
+            <option value="x">X / Twitter style</option>
+            <option value="ig">Instagram comment style</option>
+            <option value="email">Email / support ticket style</option>
+          </select>
+
+          <div class="row">
+            <label class="check">
+              <input type="checkbox" id="mg_includeAim" />
+              Include “@AIMControllers” (optional)
+            </label>
+            <label class="check">
+              <input type="checkbox" id="mg_includeLink" checked />
+              Include campaign link
+            </label>
+          </div>
+
+          <label class="fieldLabel" for="mg_name">Optional: your name/tag</label>
+          <input id="mg_name" class="field" type="text" placeholder="e.g., cookiez / xX_RumbleGoblin_Xx" />
+
+          <button class="btn primary" id="mg_generateBtn" type="button">Generate message</button>
+        </div>
+
+        <div class="card">
+          <h3 class="subhead">2) Your generated message</h3>
+          <p class="muted">One-time only. Don’t spam. Don’t pile on.</p>
+
+          <div class="copyBox">
+            <p class="copyLabel">Preview</p>
+            <pre id="mg_output">Pick options on the left, then hit “Generate message.”</pre>
+            <button class="btn" id="mg_copyBtn" type="button">Copy message</button>
+          </div>
+
+          <p class="fineprint">
+            Tip: posting is optional. Signing the petition helps the bit without pinging anyone.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="signatureWall">
+      <h2>Signature wall</h2>
+      <p class="muted">
+        Only approved display names show up here. If yours isn’t visible yet, it’s probably waiting in the moderation queue.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h3 class="subhead">Totals</h3>
+          <p class="big">
+            Total signatures: <span id="sig_total">0</span><br />
+            Approved names: <span id="sig_approved">0</span>
+          </p>
+          <p class="muted">
+            If your entry can’t be approved, it still counts — it will appear as Anonymous Supporter.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3 class="subhead">Approved supporters</h3>
+          <div id="sig_list" class="sigList"></div>
+          <p class="muted" id="sig_empty" style="display:none;">No approved names yet. Be the first.</p>
+        </div>
+      </div>
+      
+    </section>
+
+    <section class="panel" id="contact">
+      <h2>Contact MaGnetBearRL</h2>
+      <p class="muted">
+        Email:
+        <a class="link" href="mailto:MaGnetBear@proton.me">MaGnetBear@proton.me</a>
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h3 class="subhead">Quick message</h3>
+
+          <label class="fieldLabel" for="contact_type">Message type</label>
+          <select id="contact_type" class="field">
+            <option value="Support">Support</option>
+            <option value="Hate (keep it funny)">Haters to the 'right-here')</option>
+            <option value="Collab / Business">Collab / Business (Bizness also accepted)</option>
+            <option value="Report (site / moderation)">Report (site / moderation)</option>
+          </select>
+
+          <label class="fieldLabel" for="contact_handle">Your handle (optional)</label>
+          <input id="contact_handle" class="field" type="text" placeholder="e.g., @rumblegoblin / Steam / Epic / YouTube" />
+
+          <label class="fieldLabel" for="contact_message">Message</label>
+          <textarea id="contact_message" class="field" rows="5" placeholder="Write your message here..."></textarea>
+
+          <div class="actions" style="margin-top:12px;">
+            <button class="btn primary" id="contact_sendBtn" type="button">Open email</button>
+            <button class="btn" id="contact_copyBtn" type="button">Copy message text</button>
+          </div>
+
+          <p class="fineprint">
+            This opens your email app. Nothing is uploaded or stored on this website.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3 class="subhead">What to use this for</h3>
+          <p class="muted">
+            - Sponsorship inquiries / collaboration ideas<br />
+            - Support / feedback<br />
+            - Reporting weirdness or bad submissions (just website weirdness please, not your personal life or rumble normalcy.)
+            - Please use the contact me form for all well-deserved hate mail.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p class="muted">MaGnetBear • Controller Return Campaign / Support System</p>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
