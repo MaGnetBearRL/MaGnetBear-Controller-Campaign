@@ -3,7 +3,6 @@ import { copyToClipboard, fallbackPrompt } from "../utils/clipboard.js";
 import { getCampaignUrl } from "./share.js";
 
 export function initContactBox(settings) {
-  const toEmail = "MaGnetBear@proton.me";
 
   const typeEl = $("contact_type");
   const handleEl = $("contact_handle");
