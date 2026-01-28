@@ -1,0 +1,15 @@
+{
+  "items": [
+    {
+      "date": "2026-01-28",
+      "title": "Site update",
+      "body": "Reworked the campaign page layout and added an Updates + Posts feed so the public-facing status is easier to track.",
+      "links": [
+        {
+          "label": "Campaign page",
+          "url": "https://magnetbear.gg/campaign.html"
+        }
+      ]
+    }
+  ]
+}

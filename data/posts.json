@@ -1,0 +1,15 @@
+{
+    "items": [
+      {
+        "date": "2026-01-28",
+        "title": "First post",
+        "body": "Posts can be memes, links, videos, or quick status notes. Edit data/posts.json to add more.",
+        "media": {
+          "type": "link",
+          "label": "MagnetBear.gg",
+          "url": "https://magnetbear.gg/"
+        }
+      }
+    ]
+  }
+  

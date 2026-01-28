@@ -1,0 +1,24 @@
+:root {
+  --mb-light-blue: #53d5fe;
+  --mb-royal-blue: #0000ff;
+  --mb-dark-blue: #00007f;
+
+  --bg: #050812;
+  --bg2: #070b18;
+  --text: #e9f2ff;
+  --muted: rgba(233, 242, 255, 0.72);
+
+  --panel: rgba(7, 11, 24, 0.72);
+  --panel2: rgba(7, 11, 24, 0.55);
+  --card: rgba(0, 0, 0, 0.22);
+
+  --border: rgba(83, 213, 254, 0.16);
+  --border-strong: rgba(83, 213, 254, 0.26);
+  --glow-soft: rgba(83, 213, 254, 0.18);
+  --glow-royal: rgba(0, 0, 255, 0.12);
+  --glow-dark: rgba(0, 0, 127, 0.22);
+
+  --accent: var(--mb-light-blue);
+  --accent2: var(--mb-royal-blue);
+  --accent3: var(--mb-dark-blue);
+}
