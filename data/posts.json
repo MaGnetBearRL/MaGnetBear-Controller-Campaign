@@ -1,15 +1,30 @@
 {
-    "items": [
-      {
-        "date": "2026-01-28",
-        "title": "First post",
-        "body": "Posts can be memes, links, videos, or quick status notes. Edit data/posts.json to add more.",
-        "media": {
-          "type": "link",
-          "label": "MagnetBear.gg",
-          "url": "https://magnetbear.gg/"
+  "items": [
+    {
+      "date": "2026-01-31",
+      "title": "Have You Seen my Friend?",
+      "body": "Real, it's all so real all of a sudden...\nAccurate Song Vibes:",
+      "inlineLink": {
+        "label": "Friends (feat. Linney)- Subtronics",
+        "url": "https://open.spotify.com/track/1EwVDjVhYD5ynVOYLNU65g?si=a6bd89494c49419b"
+      },
+      "media": [
+        {
+          "type": "image",
+          "src": "assets/img/have_you_seen_my_friend.png",
+          "alt": "Have you seen my friend? controller meme"
         }
+      ]
+    },
+    {
+      "date": "2026-01-28",
+      "title": "Site update",
+      "body": "Is...is it working? Dear god, I may have done it.  MAGNETBEAR GOATED, WEB DEV OF THE YEAR!!(lemme know whats broken when you find it, Contact Me button somewhere around here.)",
+      "media": {
+        "type": "link",
+        "label": "Campaign page",
+        "url": "https://magnetbear.gg/campaign.html"
       }
-    ]
-  }
-  
+    }
+  ]
+}

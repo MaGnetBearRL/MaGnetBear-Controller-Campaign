@@ -9,6 +9,18 @@ function safeUrl(url) {
   }
 }
 
+function formatDateTime(item) {
+  const d = item?.date ? String(item.date) : "";
+  const t = item?.time ? String(item.time) : "";
+  const tz = item?.tz ? String(item.tz) : "";
+
+  if (!d) return "";
+
+  if (t && tz) return `${d} • ${t} ${tz}`;
+  if (t) return `${d} • ${t}`;
+  return d;
+}
+
 function renderItem(item) {
   const wrap = document.createElement("div");
   wrap.className = "feedItem";
@@ -22,7 +34,7 @@ function renderItem(item) {
 
   const date = document.createElement("span");
   date.className = "feedDate";
-  date.textContent = item.date || "";
+  date.textContent = formatDateTime(item);
 
   top.appendChild(title);
   top.appendChild(date);

@@ -208,6 +208,17 @@ pre {
   outline: none;
 }
 
+/* Dropdown legibility (native menus can default to light UI without this) */
+select.field {
+  color-scheme: dark;
+}
+
+select.field option,
+select.field optgroup {
+  background-color: #050812;
+  color: #e9f2ff;
+}
+
 .field:focus {
   border-color: rgba(83, 213, 254, 0.45);
   box-shadow: 0 0 0 3px rgba(83, 213, 254, 0.12);
@@ -299,6 +310,8 @@ textarea.field {
   margin: 0;
   color: var(--text);
   line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
 }
 
 .feedLinks {
@@ -308,7 +321,14 @@ textarea.field {
   gap: 10px;
 }
 
+.mediaGroup {
+  margin-top: 10px;
+  display: grid;
+  gap: 12px;
+}
+
 .media {
+  display: block !important;
   margin-top: 10px;
   border-radius: 14px;
   border: 1px solid rgba(83, 213, 254, 0.14);
@@ -316,10 +336,26 @@ textarea.field {
   background: rgba(0, 0, 0, 0.22);
 }
 
+.mediaGroup .media {
+  margin-top: 0;
+}
+
 .mediaImg {
+  display: block !important;
   width: 100%;
-  display: block;
+  max-width: 100%;
   height: auto;
+
+  /* Keep the card tidy without cropping */
+  max-height: 420px;
+
+  /* IMPORTANT: do not crop */
+  object-fit: contain;
+  object-position: center;
+
+  border-radius: 14px;
+  border: 1px solid rgba(83, 213, 254, 0.14);
+  background: rgba(0, 0, 0, 0.18);
 }
 
 .mediaEmbed {
@@ -329,7 +365,100 @@ textarea.field {
   border: 0;
 }
 
+/* Spotify embeds are fixed-height; don't force 16:9 */
+.mediaEmbed.spotifyEmbed {
+  aspect-ratio: auto;
+  border-radius: 12px;
+}
+
 .mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New";
   font-size: 12px;
+}
+
+/* --- POSTS: force media to actually show (overrides any global rules) --- */
+.mediaGroup {
+  margin-top: 12px;
+  display: grid !important;
+  gap: 12px;
+}
+
+.media {
+  display: block !important;
+}
+
+.mediaImg {
+  display: block !important;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(83, 213, 254, 0.14);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.mediaEmbed {
+  display: block !important;
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* Spotify embeds sometimes get crushed if a global aspect-ratio rule exists */
+.mediaEmbed.spotifyEmbed {
+  aspect-ratio: auto !important;
+}
+
+/* --- Video thumbnail cards (posts media.type: "video") --- */
+
+.videoCard {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(83, 213, 254, 0.14);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.videoThumb {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.videoOverlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 64px;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
+  background: radial-gradient(circle at center, rgba(0,0,0,0.35), rgba(0,0,0,0.0) 60%);
+  opacity: 0.92;
+  transition: opacity 120ms ease;
+}
+
+.videoLabel {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--text);
+  font-weight: 800;
+  border: 1px solid rgba(83, 213, 254, 0.14);
+  backdrop-filter: blur(6px);
+}
+
+.videoCard:hover .videoOverlay {
+  opacity: 1;
+}
+
+.videoCard:hover .videoLabel {
+  border-color: rgba(83, 213, 254, 0.35);
 }

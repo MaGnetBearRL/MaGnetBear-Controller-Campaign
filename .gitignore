@@ -1,2 +1,2 @@
-aggregated_code_unifile_*.txt
-*.unifile*
+# Ignore all local tooling scripts
+/tools/
