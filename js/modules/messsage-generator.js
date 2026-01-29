@@ -3,7 +3,32 @@ import { copyToClipboard, fallbackPrompt } from "../utils/clipboard.js";
 import { getCampaignUrl } from "./share.js";
 
 function pick(arr) {
+  if (!Array.isArray(arr) || arr.length === 0) return "";
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function norm(raw) {
+  return (raw || "").toString().trim();
+}
+
+function normLower(raw) {
+  return norm(raw).toLowerCase();
+}
+
+function mapVibe(raw) {
+  // HTML values: Supportive, Serious, Seek-Help, Short
+  const v = normLower(raw);
+  if (v === "supportive") return "supportive";
+  if (v === "serious") return "serious";
+  if (v === "short") return "short";
+  if (v === "seek-help" || v === "seekhelp") return "concerned";
+  return "supportive";
+}
+
+function safeKey(obj, key, fallbackKey) {
+  if (obj && Object.prototype.hasOwnProperty.call(obj, key)) return key;
+  if (obj && Object.prototype.hasOwnProperty.call(obj, fallbackKey)) return fallbackKey;
+  return fallbackKey;
 }
 
 export function initMessageGenerator(settings) {
@@ -23,14 +48,162 @@ export function initMessageGenerator(settings) {
 
   if (!msgGen.generateBtn || !msgGen.output) return;
 
-  function buildMessage() {
-    const vibe = msgGen.vibe ? msgGen.vibe.value : "supportive";
-    const support = msgGen.support ? msgGen.support.value : "new";
-    const story = msgGen.story ? msgGen.story.value : "respect";
-    const interest = msgGen.interest ? msgGen.interest.value : "none";
-    const platform = msgGen.platform ? msgGen.platform.value : "x";
+  // Buckets keyed to your current <option value="..."> values
+  // mg_support values: fan, new, friend, parentPet, coach
+  const supportLines = {
+    fan: [
+      "I watch MaGnetBear and this controller saga has me invested.",
+      "Long-time viewer—this is my official supportive nudge.",
+      "I’m here from the RL clips and I’m rooting for a clean return.",
+      "I just want the bear back in ranked so the content can continue."
+    ],
+    new: [
+      "I’m not sure how I ended up here, but I’m locked in now.",
+      "New here—this whole thing is hilarious, but also: good luck with the repair.",
+      "I stumbled in by accident and somehow I’m emotionally attached to this controller arc.",
+      "First time here—sending a quick supportive note."
+    ],
+    friend: [
+      "I know him (we’ve partied up like twice) and he’s absolutely feral without that controller.",
+      "Friend-ish reporting in: he’s counting the days like it’s a prison sentence.",
+      "I’ve seen him play—please return the controller before he becomes fully unhinged.",
+      "We’re in the same orbit and the man is down bad right now."
+    ],
+    parentPet: [
+      "I am his mother/father/cat and I would like peace restored to the household.",
+      "I live with him (as parent or pet) and I’ve seen enough. Please help.",
+      "As his mother/father/cat, I request the controller’s safe return with urgency.",
+      "I’m here on behalf of the household. We need the bear stabilized."
+    ],
+    coach: [
+      "I taught him everything he knows about Rocket League (very little). Please help.",
+      "As his self-appointed coach, I can confirm he needs that controller back immediately.",
+      "I trained him (barely) and now I’m responsible for this. My bad.",
+      "He learned everything from me, unfortunately. Please return the controller."
+    ]
+  };
 
-    const includeAim = msgGen.includeAim ? msgGen.includeAim.checked : false;
+  // mg_story values: respect, timeline, backonline, community
+  const storyLines = {
+    respect: [
+      "Appreciate the lifetime warranty and the fact y’all actually stand behind the product.",
+      "Respect for taking care of repairs the right way—no shortcuts.",
+      "Big respect to the AIM team for handling warranty work like pros.",
+      "Just a genuine thanks for the warranty + repair support."
+    ],
+    timeline: [
+      "Take your time if you need to—kid probably needs the break anyway.",
+      "No rush… but also the bear is losing it a little. Do what you can.",
+      "Hope the timeline stays smooth, but quality > speed.",
+      "Wishing a clean repair and a painless turnaround."
+    ],
+    backonline: [
+      "Please return him to ranked—some of us need the easy W’s.",
+      "Get him back online so he can stop freeplaying like a haunted Victorian child.",
+      "The controller returns, the content returns. That’s the deal.",
+      "Need him back in ranked asap so I can talk trash responsibly."
+    ],
+    community: [
+      "Just a quick positive show of support from the community.",
+      "Tiny community nudge: we appreciate y’all.",
+      "Nothing weird—just a respectful ‘you got this’ from people watching along.",
+      "A small wave of support so the bear doesn’t spiral."
+    ]
+  };
+
+  // mg_interest values: curious, considering, own, none
+  const interestLines = {
+    curious: [
+      "This has me looking at your builds and options, not gonna lie.",
+      "I’m actually curious about AIM now—going down the rabbit hole.",
+      "I’ve been creeping the site and learning more.",
+      "Consider me ‘AIM-curious’ after this whole saga."
+    ],
+    considering: [
+      "I’m considering AIM for my next controller.",
+      "This definitely put AIM on my shortlist.",
+      "I’ve been thinking about grabbing one—this warranty situation helps.",
+      "Low-key shopping brain activated."
+    ],
+    own: [
+      "I already own one / have experience—y’all make solid stuff.",
+      "I’ve had good experiences with AIM personally.",
+      "I’ve used AIM gear before and it treated me right.",
+      "Been there, used that—AIM’s legit."
+    ],
+    none: [
+      "No purchase context—just sending a supportive note.",
+      "I’m just here for the bear and the bit.",
+      "Not shopping, just vibing.",
+      "No agenda—just encouragement."
+    ]
+  };
+
+  // Vibe controls closers + sometimes openers/templates
+  const closersByVibe = {
+    supportive: [
+      "Appreciate y’all. Hope the repair is smooth.",
+      "Thanks for taking care of it—much respect.",
+      "Wishing a clean fix and a safe trip home.",
+      "Thank you for the help (and for saving the timeline)."
+    ],
+    serious: [
+      "Thank you for your time and for supporting your customers.",
+      "Appreciate the assistance—looking forward to a successful repair.",
+      "Thanks again for handling this professionally.",
+      "Wishing you a smooth repair process and successful return shipping."
+    ],
+    concerned: [
+      "Real talk: hope he’s doing alright. Appreciate y’all helping get him back to normal.",
+      "Hope he’s okay—this controller being gone is not helping. Thanks for the support.",
+      "He’ll survive, but… appreciate you making the repair process easy.",
+      "Thanks for helping get the bear back on the rails."
+    ],
+    short: [
+      "Appreciate you.",
+      "Thanks.",
+      "Much respect.",
+      "All love."
+    ]
+  };
+
+  // Templates: make it feel less “same order every time”
+  // Tokens get filled from the chosen bucket lines.
+  const templatesByVibe = {
+    supportive: [
+      "{aim}{support} {story} {interest} {closer}{sig}{link}",
+      "{aim}{story} {support} {closer}{sig}{link}",
+      "{aim}{support} {interest} {story} {closer}{sig}{link}"
+    ],
+    serious: [
+      "{aim}{support} {story} {interest} {closer}{sig}{link}",
+      "{aim}{story} {support} {closer}{sig}{link}"
+    ],
+    concerned: [
+      "{aim}{support} {story} {closer}{sig}{link}",
+      "{aim}{support} {interest} {story} {closer}{sig}{link}"
+    ],
+    short: [
+      "{aim}{story} {closer}{sig}{link}",
+      "{aim}{support} {closer}{sig}{link}"
+    ]
+  };
+
+  const platformFraming = {
+    x: (text) => text,
+    ig: (text) => text,
+    email: (text, who) =>
+      `Hello AIM Team,\n\n${text}\n\nThank you,\n${who || "A viewer"}`
+  };
+
+  function buildMessage() {
+    const vibe = mapVibe(msgGen.vibe?.value);
+    const supportKey = norm(msgGen.support?.value) || "new";
+    const storyKey = norm(msgGen.story?.value) || "respect";
+    const interestKey = norm(msgGen.interest?.value) || "none";
+    const platform = norm(msgGen.platform?.value) || "x";
+
+    const includeAim = !!msgGen.includeAim?.checked;
     const includeLink = msgGen.includeLink ? msgGen.includeLink.checked : true;
 
     const who =
@@ -38,128 +211,47 @@ export function initMessageGenerator(settings) {
         ? msgGen.name.value.trim()
         : "";
 
-    const aimToken = includeAim ? "@AIMControllers " : "";
     const shareUrl = getCampaignUrl(settings);
+
+    const aimToken = includeAim ? "@AIMControllers " : "";
     const linkToken = includeLink ? ` ${shareUrl}` : "";
+    const sigToken = who ? ` — ${who}` : "";
 
-    const supportLines = {
-      fan: [
-        "I watch MaGnetBear and appreciate the grind.",
-        "His Rocket League content is genuinely fun to watch.",
-        "Rooting for him to be back online soon."
-      ],
-      new: [
-        "I just found MaGnetBear and I’m already invested.",
-        "New viewer here—looking forward to the return.",
-        "Recently discovered the channel and I’m rooting for him."
-      ],
-      friend: [
-        "I know him and he’s been counting the days.",
-        "Friend of his—he’s eager to be back online.",
-        "I’m in his orbit and the wait has been real."
-      ],
-      neutral: [
-        "Neutral observer here—just sending a kind note.",
-        "No personal connection—just being supportive.",
-        "Dropping a quick positive message."
-      ]
+    const sKey = safeKey(supportLines, supportKey, "new");
+    const stKey = safeKey(storyLines, storyKey, "respect");
+    const iKey = safeKey(interestLines, interestKey, "none");
+    const vKey = safeKey(closersByVibe, vibe, "supportive");
+
+    const tokens = {
+      aim: aimToken,
+      support: pick(supportLines[sKey]),
+      story: pick(storyLines[stKey]),
+      interest: pick(interestLines[iKey]),
+      closer: pick(closersByVibe[vKey]),
+      sig: platform === "email" ? "" : sigToken,
+      link: platform === "email" ? "" : linkToken
     };
 
-    const storyLines = {
-      respect: [
-        "Appreciate the repair work and attention to detail.",
-        "Thanks for taking care of repairs—much respect.",
-        "Wishing a smooth repair and safe return."
-      ],
-      timeline: [
-        "Hoping the turnaround stays on track if possible.",
-        "Fingers crossed for an on-time return.",
-        "Hope the process stays smooth and timely."
-      ],
-      backonline: [
-        "Looking forward to him being back online with his controller.",
-        "Can’t wait to see him back playing comfortably again.",
-        "Excited for the return so he can get back to it."
-      ],
-      community: [
-        "Just a quick show of positive community support.",
-        "Sharing a small wave of encouragement from the community.",
-        "A simple supportive nudge from people watching along."
-      ]
-    };
+    const template = pick(templatesByVibe[vKey]);
+    const core = template
+      .replaceAll("{aim}", tokens.aim)
+      .replaceAll("{support}", tokens.support)
+      .replaceAll("{story}", tokens.story)
+      .replaceAll("{interest}", tokens.interest)
+      .replaceAll("{closer}", tokens.closer)
+      .replaceAll("{sig}", tokens.sig)
+      .replaceAll("{link}", tokens.link)
+      .replace(/\s+/g, " ")
+      .trim();
 
-    const interestLines = {
-      curious: [
-        "I’m also curious about AIM builds and options.",
-        "This made me take a look at your lineup.",
-        "I’ve been browsing and learning more."
-      ],
-      considering: [
-        "I’m considering AIM for a future controller.",
-        "This has me looking more seriously at AIM.",
-        "AIM is on my short list."
-      ],
-      own: [
-        "I’ve owned one / used one before and had a solid experience.",
-        "I’ve had good experiences with AIM in the past.",
-        "I’ve seen AIM builds up close—nice work."
-      ],
-      none: [
-        "No purchase context—just being supportive.",
-        "Just sending a positive message.",
-        "Only here to be encouraging."
-      ]
-    };
-
-    const closersByVibe = {
-      supportive: [
-        "Thanks again, and hope everything goes smoothly.",
-        "Appreciate you.",
-        "Wishing a smooth return."
-      ],
-      serious: [
-        "Thank you for your time and support.",
-        "Thanks for the work you do.",
-        "Much appreciated."
-      ],
-      light: [
-        "Hope it’s an easy fix and a safe return.",
-        "Sending good vibes for a smooth turnaround.",
-        "Thanks for taking care of it."
-      ],
-      short: [
-        "Appreciate you.",
-        "Thank you.",
-        "All the best."
-      ]
-    };
-
-    const platformFraming = {
-      x: (text) => text,
-      ig: (text) => text,
-      email: (text) => `Hello AIM Team,\n\n${text}\n\nThank you,\n${who || "A viewer"}`
-    };
-
-    const core = [
-      aimToken.trim(),
-      pick(supportLines[support]),
-      pick(storyLines[story]),
-      pick(interestLines[interest]),
-      pick(closersByVibe[vibe])
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    let msg = platformFraming[platform](core);
-
-    if (platform !== "email") {
-      if (who) msg = `${msg} — ${who}`;
-      msg = `${msg}${linkToken}`;
-    } else {
-      if (includeLink) msg = `${msg}\n\nCampaign link: ${shareUrl}`;
+    if (platform === "email") {
+      let email = platformFraming.email(core, who);
+      if (includeLink) email = `${email}\n\nCampaign link: ${shareUrl}`;
+      return email.trim();
     }
 
-    return msg.trim();
+    const frameFn = platformFraming[platform] || platformFraming.x;
+    return frameFn(core).trim();
   }
 
   function setOutput(text) {
@@ -167,13 +259,18 @@ export function initMessageGenerator(settings) {
   }
 
   msgGen.generateBtn.addEventListener("click", () => {
-    setOutput(buildMessage());
+    try {
+      setOutput(buildMessage());
+    } catch (err) {
+      console.error("Message generator failed:", err);
+      setOutput("Message generator crashed. Open DevTools Console for the error.");
+    }
   });
 
   if (msgGen.copyBtn) {
     msgGen.copyBtn.addEventListener("click", async () => {
       const txt = msgGen.output.textContent || "";
-      if (!txt || txt.includes("Pick options")) return;
+      if (!txt || txt.includes("Pick options") || txt.includes("crashed")) return;
 
       try {
         await copyToClipboard(txt);
