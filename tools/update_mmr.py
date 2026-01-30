@@ -28,6 +28,46 @@ except ImportError:
     subprocess.run([sys.executable, "-m", "pip", "install", "cloudscraper"], check=True)
     import cloudscraper
 
+try:
+    from winotify import Notification, audio
+    HAS_WINOTIFY = True
+except ImportError:
+    HAS_WINOTIFY = False
+
+
+def send_notification(title, message, is_error=False):
+    """Send Windows toast notification."""
+    if not HAS_WINOTIFY:
+        # Install winotify on first error
+        if is_error:
+            subprocess.run([sys.executable, "-m", "pip", "install", "winotify"], check=True)
+            try:
+                from winotify import Notification, audio
+                toast = Notification(
+                    app_id="MaGnetBear MMR Updater",
+                    title=title,
+                    msg=message,
+                    duration="long"
+                )
+                toast.set_audio(audio.Default, loop=False)
+                toast.show()
+            except:
+                pass
+        return
+    
+    try:
+        toast = Notification(
+            app_id="MaGnetBear MMR Updater",
+            title=title,
+            msg=message,
+            duration="long" if is_error else "short"
+        )
+        if is_error:
+            toast.set_audio(audio.Default, loop=False)
+        toast.show()
+    except Exception as e:
+        print(f"  (Notification failed: {e})")
+
 # Paths
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
@@ -190,6 +230,14 @@ def main():
         print("  Success! Got data from API.")
     else:
         print(f"  Auto-fetch failed: {error}")
+        
+        # Send notification if cookies expired
+        if "403" in str(error) or "expired" in str(error).lower():
+            send_notification(
+                "MMR Updater: Cookies Expired!",
+                "Re-export cookies from tracker.gg to continue auto-updates.",
+                is_error=True
+            )
         
         if not COOKIES_FILE.exists():
             print("""
