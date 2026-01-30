@@ -1,0 +1,354 @@
+/* =========================
+   HERO TIMER (FlipDown + Count-up)
+   ========================= */
+
+.timerHero {
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 70, 90, 0.22);
+  background:
+    radial-gradient(700px 260px at 22% 8%, rgba(255, 70, 90, 0.14), transparent 62%),
+    radial-gradient(700px 260px at 78% 18%, rgba(83, 213, 254, 0.14), transparent 62%),
+    linear-gradient(180deg, rgba(83, 213, 254, 0.06), rgba(0, 0, 127, 0.05)),
+    rgba(0, 0, 0, 0.22);
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.60),
+    0 0 0 1px rgba(255, 70, 90, 0.08) inset,
+    0 0 0 1px rgba(83, 213, 254, 0.08) inset;
+}
+
+.timerTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.timerTitle {
+  margin: 0;
+  letter-spacing: 0.12em;
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.timerSub {
+  margin: 0 0 12px;
+}
+
+.timerFoot {
+  margin: 12px 0 0;
+}
+
+.timerToggle {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(83, 213, 254, 0.16);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.timerToggle .btn.small {
+  padding: 8px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.timerToggle .btn[aria-pressed="true"] {
+  border-color: rgba(255, 70, 90, 0.32);
+  background: linear-gradient(90deg, rgba(255, 70, 90, 0.16), rgba(83, 213, 254, 0.14));
+}
+
+/* --- FlipDown theme: magnetbear --- */
+.flipdown.flipdown__theme-magnetbear {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  font-weight: 900;
+  width: 100%;
+  height: auto;
+}
+
+.timerHero .flipdown .rotor-group {
+  padding-right: 26px;
+}
+
+.timerHero .flipdown .rotor {
+  width: 62px;
+  height: 96px;
+  margin: 0 6px 0 0;
+  border-radius: 12px;
+  font-size: 5rem;
+  border: 1px solid rgba(83, 213, 254, 0.16);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(83, 213, 254, 0.06) inset;
+}
+
+.timerHero .flipdown .rotor-top,
+.timerHero .flipdown .rotor-bottom,
+.timerHero .flipdown .rotor-leaf-front,
+.timerHero .flipdown .rotor-leaf-rear {
+  width: 62px;
+}
+
+.timerHero .flipdown .rotor-top,
+.timerHero .flipdown .rotor-leaf-front {
+  color: rgba(255, 70, 90, 0.95);
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.7),
+    0 0 18px rgba(255, 70, 90, 0.22);
+  background: rgba(8, 10, 18, 0.85);
+}
+
+.timerHero .flipdown .rotor-bottom,
+.timerHero .flipdown .rotor-leaf-rear {
+  color: rgba(255, 70, 90, 0.92);
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.7),
+    0 0 18px rgba(255, 70, 90, 0.18);
+  background: rgba(3, 5, 12, 0.88);
+}
+
+.timerHero .flipdown .rotor:after {
+  border-top: 1px solid rgba(83, 213, 254, 0.18);
+}
+
+.timerHero .flipdown .rotor-group-heading:before {
+  color: rgba(233, 242, 255, 0.75);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+/* Count-up view (styled to match FlipDown) */
+.countup {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 760px) {
+  .countup {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.cu-group {
+  border: 1px solid rgba(83, 213, 254, 0.14);
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 14px;
+  padding: 10px;
+}
+
+.cu-label {
+  font-size: 12px;
+  color: rgba(233, 242, 255, 0.75);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.cu-rotors {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cu-rotor {
+  width: 62px;
+  height: 96px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 5rem;
+  color: rgba(255, 70, 90, 0.95);
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.7),
+    0 0 18px rgba(255, 70, 90, 0.22);
+  background: rgba(8, 10, 18, 0.85);
+  border: 1px solid rgba(83, 213, 254, 0.16);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(83, 213, 254, 0.06) inset;
+}
+
+@media (max-width: 550px) {
+  .timerHero .flipdown .rotor,
+  .cu-rotor {
+    width: 44px;
+    height: 72px;
+    font-size: 3.6rem;
+  }
+
+  .timerHero .flipdown .rotor-top,
+  .timerHero .flipdown .rotor-bottom,
+  .timerHero .flipdown .rotor-leaf-front,
+  .timerHero .flipdown .rotor-leaf-rear {
+    width: 44px;
+  }
+}
+
+/* =========================
+   TIMER CAROUSEL CONTROLS
+   ========================= */
+
+.timerHero {
+  position: relative;
+}
+
+.timerTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.timerCountPill {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(83, 213, 254, 0.18);
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(233, 242, 255, 0.78);
+}
+
+.timerNavBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 72px;
+  border-radius: 16px;
+  border: 1px solid rgba(83, 213, 254, 0.18);
+  background: rgba(0, 0, 0, 0.26);
+  color: rgba(233, 242, 255, 0.88);
+  font-size: 34px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease, transform 140ms ease;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+}
+
+.timerNavBtn.left { left: 10px; }
+.timerNavBtn.right { right: 10px; }
+
+.timerHero:hover .timerNavBtn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.timerNavBtn:hover {
+  transform: translateY(-50%) scale(1.03);
+  border-color: rgba(255, 70, 90, 0.28);
+}
+
+.timerDots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.timerDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(83, 213, 254, 0.22);
+  background: rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  padding: 0;
+}
+
+.timerDot.active {
+  background: rgba(255, 70, 90, 0.55);
+  border-color: rgba(255, 70, 90, 0.55);
+  box-shadow: 0 0 18px rgba(255, 70, 90, 0.18);
+}
+
+/* =========================
+   TOP SECTION: Status above Timer
+   ========================= */
+
+.topStack {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+/* =========================
+   TIMER: narrow-screen safety
+   ========================= */
+
+.timerHero {
+  overflow: hidden;
+}
+
+.timerHero .flipdown {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px;
+}
+
+.timerHero .flipdown .rotor-group {
+  width: max-content;
+}
+
+/* =========================
+   TIMER DISPLAY CONSISTENCY
+   ========================= */
+
+   .timerDisplayArea {
+    /* Same vertical rhythm regardless of view */
+    margin-top: 8px;
+    padding: 6px 0 10px;
+  
+    /* Allow narrow screens to scroll instead of breaking layout */
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  
+    /* “Normal” case: center the timer contents */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    /* Prevent the flipdown view from drifting to the bottom */
+    min-height: 170px;
+  }
+  
+  .timerDisplayInner {
+    width: max-content;
+    margin: 0 auto;
+  }
+  
+  /* When the timer is wider than the container, anchor to the left so scrolling feels natural */
+  @media (max-width: 700px) {
+    .timerDisplayArea {
+      justify-content: flex-start;
+    }
+  
+    .timerDisplayInner {
+      margin: 0;
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+  }
+  
+  /* Kill any default margins coming from vendor styles */
+  #flipdown,
+  #countup {
+    margin: 0;
+  }
+  

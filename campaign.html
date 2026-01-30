@@ -10,66 +10,112 @@
   <link rel="icon" type="image/png" href="/assets/ico/favicon-16x16.png" sizes="16x16">
   <link rel="apple-touch-icon" href="/assets/ico/apple-touch-icon.png">
 
-  <link rel="stylesheet" href="css/tokens.css?v=mb1" />
-  <link rel="stylesheet" href="css/base.css?v=mb1" />
-  <link rel="stylesheet" href="css/campaign.css?v=mb1" />
+  <link rel="stylesheet" href="css/tokens.css?v=mb4" />
+  <link rel="stylesheet" href="css/base.css?v=mb4" />
+
+  <!-- IMPORTANT: vendor FlipDown CSS must load BEFORE campaign.css so our overrides win -->
+  <link rel="stylesheet" href="css/vendor/flipdown/flipdown.css?v=mb4" />
+  <link rel="stylesheet" href="css/campaign.css?v=mb4" />
 
   <meta name="description" content="Status updates and a respectful community nudge while MaGnetBear’s controller is being repaired." />
 </head>
+
 <body>
   <main class="wrap">
     <header class="hero">
       <div class="badge">CONTROLLER REPAIR CAMPAIGN</div>
       <h1>MaGnetBearRL SUPPORT PETITION</h1>
-      <p class="sub">
-        My AIM controller is away getting repaired. This page tracks status and keeps everything in one place.
-        Please keep it respectful.
-      </p>
     </header>
 
     <section class="panel" id="top">
-      <div class="grid">
-        <div class="card">
-          <h2>Status</h2>
-          <p class="big" id="statusText">Controller: In transit / in repair</p>
-          <p class="muted">Shipped: <span id="shipDateText">—</span></p>
-          <p class="muted">Estimated return: <span id="etaDateText">—</span></p>
+      <!-- TIMER HERO (Carousel) -->
+      <div class="card timerHero" id="timerHero">
+        <button class="timerNavBtn left" id="timerPrev" type="button" aria-label="Previous timer view">‹</button>
+        <button class="timerNavBtn right" id="timerNext" type="button" aria-label="Next timer view">›</button>
+
+        <div class="timerTopRow">
+          <div class="timerTitleWrap">
+            <h2 class="timerTitle" id="timerViewTitle">TIME WITHOUT CONTROLLER</h2>
+            <div class="timerCountPill" id="timerViewCount">1 / 3</div>
+          </div>
         </div>
 
-        <div class="card">
-          <h2>Countdown</h2>
-          <p class="countdown" id="countdown">—</p>
-          <p class="muted">If you share anything, do it once and keep it respectful.</p>
+        <div class="timerDisplayArea" id="timerDisplayArea">
+          <!-- FlipDown mounts here for countdown views -->
+          <div id="flipdown" class="flipdown flipdown__theme-dark" aria-label="Countdown timer"></div>
+
+          <!-- Count-up view -->
+          <div id="countup" class="countup" hidden aria-label="Count-up timer">
+            <div class="cu-group">
+              <div class="cu-label">DAYS</div>
+              <div class="cu-rotors" id="cu_days"></div>
+            </div>
+
+            <div class="cu-group">
+              <div class="cu-label">HOURS</div>
+              <div class="cu-rotors" id="cu_hours"></div>
+            </div>
+
+            <div class="cu-group">
+              <div class="cu-label">MINUTES</div>
+              <div class="cu-rotors" id="cu_minutes"></div>
+            </div>
+
+            <div class="cu-group">
+              <div class="cu-label">SECONDS</div>
+              <div class="cu-rotors" id="cu_seconds"></div>
+            </div>
+          </div>
         </div>
+
+        <div class="timerDots" id="timerDots" aria-label="Timer view indicator"></div>
       </div>
 
-      <div class="actions">
-        <a class="btn primary" id="signBtn" href="#" target="_blank" rel="noopener">Sign the petition</a>
-        <button class="btn" id="shareBtn" type="button">Copy link to share</button>
-        <a class="btn ghost" href="#updates">Updates</a>
-        <a class="btn ghost" href="#posts">Posts</a>
-        <a class="btn ghost" href="#signatureWall">Signatures</a>
-        <a class="btn ghost" href="#contact">Contact</a>
+      <div class="actions" aria-label="Campaign navigation">
+        <a class="btn primary" id="signBtn" href="#" target="_blank" rel="noopener">SIGN PETITION</a>
+        <button class="btn" id="shareBtn" type="button">SHARE</button>
+        <button class="btn ghost" id="updatesBtn" type="button">UPDATES</button>
+        <a class="btn ghost" href="#posts">CRASHOUT POSTING</a>
+        <a class="btn ghost" href="#signatureWall">SIGNATURES</a>
+        <button class="btn ghost" id="contactOpenBtn" type="button">CONTACT US</button>
       </div>
 
       <div class="fineprint">
-        <p><strong>MaGnetBear's DEN RULES:</strong> No harassment. No spam. No dogpiling. Don't be a dick, and only very light trolling, throwing, selling is accepted on a case-by-case basis. </p>
+        <p><strong>MaGnetBear's Den Rules:</strong><br>No harassment. No spam. Don't be a dick. And PLEASE only very light trolling, throwing, selling is accepted on a case-by-case basis.</p>
         <p class="muted">
           AIM Controllers is not affiliated with this page. Form submissions are moderated; only approved display names and comments appear publicly.
         </p>
       </div>
     </section>
 
-    <section class="panel" id="updates">
-      <h2>UPDATES</h2>
-      <p class="muted">This section is for status updates about the controller/campaign.</p>
-      <div id="updates_feed" class="feed" aria-live="polite"></div>
-      <p class="muted" id="updates_empty" style="display:none;">No updates yet.</p>
+    <section class="panel" id="signatureWall">
+      <h2>Signature wall</h2>
+      <p class="muted">
+        Only auto-generated, anonymous, and approved user submitted display names show up here. Be patient with approval.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h3 class="subhead">Totals</h3>
+          <p class="big">
+            Total signatures: <span id="sig_total">0</span><br />
+            Approved names: <span id="sig_approved">0</span>
+          </p>
+          <p class="muted">
+            If your entry can't be approved, it still counts — it will appear as Anonymous Supporter.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3 class="subhead">Approved supporters</h3>
+          <div id="sig_list" class="sigList"></div>
+          <p class="muted" id="sig_empty" style="display:none;">No approved names yet. Be the first.</p>
+        </div>
+      </div>
     </section>
 
     <section class="panel" id="posts">
-      <h2>POSTS</h2>
-      <p class="muted">Daily Crashout Posting</p>
+      <h2>DAILY CRASHOUT POSTING</h2>
       <div id="posts_feed" class="feed" aria-live="polite"></div>
       <p class="muted" id="posts_empty" style="display:none;">No posts yet.</p>
     </section>
@@ -77,11 +123,10 @@
     <section class="panel" id="messageGen">
       <h2>MESSAGE GENERATOR FOR SUPPORT POSTS!</h2>
       <p class="muted">
-        Quick easy support shout. Short enough for IG/X/YT comments/posts,  Can't promise they won't be cringe, My Fault. Close One! Whew.
-        Messages automatically include AIM + the link to this petition page.
+        Quick easy support shout. Short enough for IG/Twitter/YouTube hookup.<br>Messages automatically include AIM + the link to this petition page.
       </p>
 
-      <div class="grid">
+      <div class="grid stacked">
         <div class="card">
           <h3 class="subhead">1) Options</h3>
 
@@ -120,7 +165,7 @@
 
           <div class="copyBox">
             <p class="copyLabel">Preview</p>
-            <pre id="mg_output">Pick options on the left, then hit “Generate Message!”</pre>
+            <pre id="mg_output">Pick options above, then hit "Generate Message!"</pre>
             <button class="btn" id="mg_copyBtn" type="button">Copy message</button>
           </div>
 
@@ -131,37 +176,21 @@
       </div>
     </section>
 
-    <section class="panel" id="signatureWall">
-      <h2>Signature wall</h2>
-      <p class="muted">
-        Only auto-generated, anonymous, and approved user submitted display names show up here. Be patient with approval.
-      </p>
+    <footer class="footer">
+      <p class="muted">MaGnetBear • Controller Repair Campaign</p>
+    </footer>
+  </main>
 
-      <div class="grid">
-        <div class="card">
-          <h3 class="subhead">Totals</h3>
-          <p class="big">
-            Total signatures: <span id="sig_total">0</span><br />
-            Approved names: <span id="sig_approved">0</span>
-          </p>
-          <p class="muted">
-            If your entry can’t be approved, it still counts — it will appear as Anonymous Supporter.
-          </p>
-        </div>
-
-        <div class="card">
-          <h3 class="subhead">Approved supporters</h3>
-          <div id="sig_list" class="sigList"></div>
-          <p class="muted" id="sig_empty" style="display:none;">No approved names yet. Be the first.</p>
-        </div>
+  <!-- CONTACT MODAL (email not shown on page) -->
+  <div id="contactModal" class="modalOverlay" hidden aria-hidden="true">
+    <div class="modalDialog" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
+      <div class="modalHeader">
+        <h2 id="contactModalTitle">Contact MaGnetBearRL</h2>
+        <button class="btn ghost small modalClose" id="contact_closeBtn" type="button" aria-label="Close contact form">Close</button>
       </div>
-    </section>
 
-    <section class="panel" id="contact">
-      <h2>Contact MaGnetBearRL</h2>
       <p class="muted">
-        Email:
-        <a class="link" href="mailto:MaGnetBear@proton.me">MaGnetBear@proton.me</a>
+        Use this form if you want to reach out. It opens your email app (nothing is uploaded or stored on this website).
       </p>
 
       <div class="grid">
@@ -201,13 +230,28 @@
           </p>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <footer class="footer">
-      <p class="muted">MaGnetBear • Controller Repair Campaign</p>
-    </footer>
-  </main>
+  <!-- UPDATES MODAL -->
+  <div id="updatesModal" class="modalOverlay" hidden aria-hidden="true">
+    <div class="modalDialog" role="dialog" aria-modal="true" aria-labelledby="updatesModalTitle">
+      <div class="modalHeader">
+        <h2 id="updatesModalTitle">Updates</h2>
+        <button class="btn ghost small modalClose" id="updates_closeBtn" type="button" aria-label="Close updates">✕</button>
+      </div>
 
-  <script type="module" src="js/main.js?v=mb2"></script>
+      <p class="muted">Site/campaign updates.</p>
+
+      <div id="updates_feed" class="feed" aria-live="polite"></div>
+      <p class="muted" id="updates_empty" style="display:none;">No updates yet.</p>
+    </div>
+  </div>
+
+  <!-- FlipDown vendor JS (global FlipDown) -->
+  <script src="js/vendor/flipdown/flipdown.js?v=mb4"></script>
+
+  <!-- Your site JS -->
+  <script type="module" src="js/main.js?v=mb4"></script>
 </body>
 </html>

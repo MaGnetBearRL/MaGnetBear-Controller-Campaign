@@ -1,2 +1,6 @@
 # Ignore all local tooling scripts
 /tools/
+
+# Local dev docs (not for remote repo)
+CURSOR_CONTEXT.md
+/docs/

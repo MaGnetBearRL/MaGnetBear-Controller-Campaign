@@ -1,0 +1,64 @@
+.modalOpen {
+  overflow: hidden;
+}
+
+.modalOverlay[hidden] {
+  display: none;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+}
+
+.modalDialog {
+  width: min(980px, 100%);
+  max-height: min(86vh, 860px);
+  overflow: auto;
+  border-radius: 18px;
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(83, 213, 254, 0.08), rgba(0, 0, 127, 0.06)),
+    rgba(7, 11, 24, 0.97);
+  border: 1px solid rgba(83, 213, 254, 0.18);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(83, 213, 254, 0.08) inset;
+  backdrop-filter: blur(12px);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.btn.small {
+  padding: 8px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+/* Modal close button styling */
+.modalClose {
+  border: 1px solid rgba(83, 213, 254, 0.22);
+  background: rgba(0, 0, 0, 0.25);
+  min-width: 38px;
+  min-height: 38px;
+  display: grid;
+  place-items: center;
+}
+
+.modalClose:hover {
+  border-color: rgba(83, 213, 254, 0.45);
+  background: rgba(83, 213, 254, 0.12);
+  box-shadow: 0 0 12px rgba(83, 213, 254, 0.15);
+}
