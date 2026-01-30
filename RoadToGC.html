@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Road to GC | MaGnetBear</title>
+
+  <link rel="icon" href="/assets/ico/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/assets/ico/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/assets/ico/favicon-16x16.png" sizes="16x16">
+  <link rel="apple-touch-icon" href="/assets/ico/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="css/tokens.css?v=mb7" />
+  <link rel="stylesheet" href="css/base.css?v=mb7" />
+  <link rel="stylesheet" href="css/mmr-tracker.css?v=mb7" />
+
+  <meta name="description" content="MaGnetBear's Rocket League MMR progression tracker - Road to Grand Champion!" />
+</head>
+
+<body>
+  <div class="mmr-page">
+    <div class="mmr-container">
+      
+      <!-- Header -->
+      <header class="mmr-header">
+        <img 
+          class="mmr-logo" 
+          src="assets/ico/magnetbear-128x128.png" 
+          alt="MaGnetBear Logo"
+        />
+        <div class="mmr-title-group">
+          <h1 class="mmr-title">Road to Grand Champion</h1>
+          <p class="mmr-subtitle">MaGnetBear • Epic Games</p>
+        </div>
+        <div class="mmr-playlist-badge" id="playlistBadge">Rumble</div>
+      </header>
+
+      <!-- Stats Summary -->
+      <div class="mmr-stats-bar" id="statsBar">
+        <div class="mmr-stat">
+          <span class="mmr-stat-label">Current Rank</span>
+          <span class="mmr-stat-value rank" id="statRank">Champion II</span>
+        </div>
+        <div class="mmr-stat">
+          <span class="mmr-stat-label">Division</span>
+          <span class="mmr-stat-value" id="statDivision">Division II</span>
+        </div>
+        <div class="mmr-stat">
+          <span class="mmr-stat-label">Rating</span>
+          <span class="mmr-stat-value" id="statRating">1,074</span>
+        </div>
+        <div class="mmr-stat">
+          <span class="mmr-stat-label">To GC1</span>
+          <span class="mmr-stat-value negative" id="statToGC">-361</span>
+        </div>
+        <div class="mmr-stat">
+          <span class="mmr-stat-label">Matches</span>
+          <span class="mmr-stat-value" id="statMatches">169</span>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="mmr-chart-wrapper">
+        <div class="mmr-chart-header">
+          <h2 class="mmr-chart-title">MMR History</h2>
+        </div>
+
+        <div class="mmr-chart-container" id="chartContainer">
+          <svg class="mmr-chart-svg" id="chartSvg" preserveAspectRatio="xMidYMid meet">
+            <!-- Rank bands, grid, line, and points rendered by JS -->
+          </svg>
+
+          <!-- Cursor tracker with MagnetBear logo -->
+          <div class="mmr-cursor-tracker" id="cursorTracker">
+            <img 
+              class="mmr-cursor-logo" 
+              src="assets/ico/magnetbear-48x48.png" 
+              alt=""
+            />
+            <div class="mmr-cursor-line" id="cursorLine"></div>
+          </div>
+
+          <!-- Tooltip -->
+          <div class="mmr-tooltip" id="tooltip">
+            <div class="mmr-tooltip-date" id="tooltipDate">Jan 30, 2026</div>
+            <div class="mmr-tooltip-rank" id="tooltipRank">Champion II</div>
+            <div class="mmr-tooltip-division" id="tooltipDivision">Division II</div>
+            <div class="mmr-tooltip-stats">
+              <div class="mmr-tooltip-stat">
+                <span class="mmr-tooltip-stat-label">MMR</span>
+                <span class="mmr-tooltip-stat-value mmr" id="tooltipMmr">1,074</span>
+              </div>
+              <div class="mmr-tooltip-stat">
+                <span class="mmr-tooltip-stat-label">From GC1</span>
+                <span class="mmr-tooltip-stat-value gc-diff" id="tooltipGcDiff">-361</span>
+              </div>
+            </div>
+            <div class="mmr-tooltip-estimated" id="tooltipEstimated"></div>
+          </div>
+        </div>
+
+        <div class="mmr-instructions">
+          Hover over the chart to see MMR at any point. Click a data point for exact stats.
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="mmr-footer">
+        <p class="mmr-footer-text">
+          Data sourced from 
+          <a class="mmr-footer-link" href="https://rocketleague.tracker.network/rocket-league/profile/epic/MaGnetBear/mmr?playlist=28" target="_blank" rel="noopener">
+            Tracker Network
+          </a>
+          • Auto-updates hourly
+          <span class="mmr-last-updated" id="lastUpdated"></span>
+        </p>
+        <a class="mmr-back-link" href="campaign.html">← Back to Campaign</a>
+      </footer>
+
+    </div>
+  </div>
+
+  <script type="module" src="js/modules/mmr-chart.js?v=mb7"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+  "profile": {
+    "platform": "epic",
+    "platformUsername": "MaGnetBear",
+    "playlist": "Rumble",
+    "playlistId": 28
+  },
+  "currentRating": {
+    "mmr": 1074,
+    "rank": "Champion II",
+    "division": "Division II",
+    "matches": 169
+  },
+  "rankThresholds": {
+    "gc1": 1435,
+    "gc2": 1535,
+    "gc3": 1635,
+    "ssl": 1862,
+    "comment": "Rumble thresholds - may differ from standard playlists"
+  },
+  "rankBands": [
+    { "name": "Platinum II", "minMmr": 695, "maxMmr": 755, "color": "rgba(0, 182, 182, 0.25)" },
+    { "name": "Platinum III", "minMmr": 755, "maxMmr": 815, "color": "rgba(0, 182, 182, 0.25)" },
+    { "name": "Diamond I", "minMmr": 815, "maxMmr": 875, "color": "rgba(0, 79, 182, 0.25)" },
+    { "name": "Diamond II", "minMmr": 875, "maxMmr": 935, "color": "rgba(0, 79, 182, 0.25)" },
+    { "name": "Diamond III", "minMmr": 935, "maxMmr": 995, "color": "rgba(0, 79, 182, 0.25)" },
+    { "name": "Champion I", "minMmr": 995, "maxMmr": 1075, "color": "rgba(142, 89, 225, 0.25)" },
+    { "name": "Champion II", "minMmr": 1075, "maxMmr": 1155, "color": "rgba(142, 89, 225, 0.25)" },
+    { "name": "Champion III", "minMmr": 1155, "maxMmr": 1235, "color": "rgba(142, 89, 225, 0.25)" },
+    { "name": "Grand Champion I", "minMmr": 1435, "maxMmr": 1535, "color": "rgba(227, 150, 68, 0.25)" },
+    { "name": "Grand Champion II", "minMmr": 1535, "maxMmr": 1635, "color": "rgba(227, 150, 68, 0.25)" },
+    { "name": "Grand Champion III", "minMmr": 1635, "maxMmr": 1862, "color": "rgba(227, 150, 68, 0.25)" }
+  ],
+  "dataPoints": [
+    { "date": "2025-02-01T00:00:00Z", "mmr": 870, "rank": "Diamond II", "division": 1 },
+    { "date": "2025-02-15T00:00:00Z", "mmr": 855, "rank": "Diamond I", "division": 3 },
+    { "date": "2025-03-01T00:00:00Z", "mmr": 890, "rank": "Diamond II", "division": 2 },
+    { "date": "2025-03-15T00:00:00Z", "mmr": 865, "rank": "Diamond II", "division": 1 },
+    { "date": "2025-04-01T00:00:00Z", "mmr": 920, "rank": "Diamond II", "division": 3 },
+    { "date": "2025-04-15T00:00:00Z", "mmr": 875, "rank": "Diamond II", "division": 1 },
+    { "date": "2025-04-24T20:00:00Z", "mmr": 881, "rank": "Diamond II", "division": 2 },
+    { "date": "2025-05-01T00:00:00Z", "mmr": 850, "rank": "Diamond I", "division": 3 },
+    { "date": "2025-05-15T00:00:00Z", "mmr": 830, "rank": "Diamond I", "division": 2 },
+    { "date": "2025-06-01T00:00:00Z", "mmr": 820, "rank": "Diamond I", "division": 2 },
+    { "date": "2025-06-15T00:00:00Z", "mmr": 795, "rank": "Platinum III", "division": 3 },
+    { "date": "2025-07-01T00:00:00Z", "mmr": 810, "rank": "Diamond I", "division": 1 },
+    { "date": "2025-07-15T00:00:00Z", "mmr": 850, "rank": "Diamond I", "division": 3 },
+    { "date": "2025-08-01T00:00:00Z", "mmr": 920, "rank": "Diamond II", "division": 3 },
+    { "date": "2025-08-15T00:00:00Z", "mmr": 960, "rank": "Diamond III", "division": 2 },
+    { "date": "2025-09-01T00:00:00Z", "mmr": 940, "rank": "Diamond III", "division": 1 },
+    { "date": "2025-09-15T00:00:00Z", "mmr": 910, "rank": "Diamond II", "division": 3 },
+    { "date": "2025-10-01T00:00:00Z", "mmr": 870, "rank": "Diamond II", "division": 1 },
+    { "date": "2025-10-15T00:00:00Z", "mmr": 850, "rank": "Diamond I", "division": 3 },
+    { "date": "2025-11-01T00:00:00Z", "mmr": 920, "rank": "Diamond II", "division": 3 },
+    { "date": "2025-11-15T00:00:00Z", "mmr": 980, "rank": "Diamond III", "division": 3 },
+    { "date": "2025-12-01T00:00:00Z", "mmr": 950, "rank": "Diamond III", "division": 1 },
+    { "date": "2025-12-15T00:00:00Z", "mmr": 870, "rank": "Diamond II", "division": 1 },
+    { "date": "2026-01-01T00:00:00Z", "mmr": 1010, "rank": "Champion I", "division": 1 },
+    { "date": "2026-01-15T00:00:00Z", "mmr": 1050, "rank": "Champion I", "division": 3 },
+    { "date": "2026-01-30T00:00:00Z", "mmr": 1074, "rank": "Champion II", "division": 2 }
+  ],
+  "_comment": "PASTE YOUR ACTUAL DATA FROM TRACKER.GG HERE - this is sample data based on the screenshot"
+}

@@ -1,6 +1,10 @@
-# Ignore all local tooling scripts
-/tools/
+# Local dev tools (keep repo clean, only include what GitHub Action needs)
+/tools/*
+!/tools/playwright_fetch_mmr.py
 
-# Local dev docs (not for remote repo)
+# Local dev docs
 CURSOR_CONTEXT.md
 /docs/
+
+# Temp data files
+/data/trn-raw.json

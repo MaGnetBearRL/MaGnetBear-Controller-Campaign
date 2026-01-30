@@ -1,0 +1,447 @@
+/* ============================================
+   MMR TRACKER PAGE - MaGnetBear Style
+   ============================================ */
+
+/* Page Layout */
+.mmr-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a1628 0%, #050812 50%, #0d0d1a 100%);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  padding: 2rem;
+}
+
+.mmr-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.mmr-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.mmr-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 20px var(--glow-soft);
+}
+
+.mmr-title-group {
+  flex: 1;
+}
+
+.mmr-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 0.25rem 0;
+  letter-spacing: 0.5px;
+}
+
+.mmr-subtitle {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.mmr-playlist-badge {
+  background: linear-gradient(135deg, rgba(83, 213, 254, 0.15), rgba(0, 0, 255, 0.1));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Stats Summary Bar */
+.mmr-stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: rgba(10, 22, 40, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.mmr-stat {
+  display: flex;
+  flex-direction: column;
+  padding-right: 1.5rem;
+  border-right: 1px solid var(--border);
+}
+
+.mmr-stat:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.mmr-stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.mmr-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.mmr-stat-value.rank {
+  color: #8e59e1; /* Champion purple */
+}
+
+.mmr-stat-value.positive {
+  color: #4ade80;
+}
+
+.mmr-stat-value.negative {
+  color: #f87171;
+}
+
+/* Chart Container */
+.mmr-chart-wrapper {
+  position: relative;
+  background: linear-gradient(180deg, #1a1f3d 0%, #141832 100%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.mmr-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.mmr-chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mmr-chart-title::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.mmr-chart-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  cursor: crosshair;
+}
+
+/* SVG Chart Styles */
+.mmr-chart-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.mmr-rank-band {
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+}
+
+.mmr-rank-band:hover {
+  opacity: 0.5;
+}
+
+.mmr-grid-line {
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 1;
+}
+
+.mmr-axis-label {
+  font-size: 10px;
+  fill: var(--muted);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.mmr-rank-label {
+  font-size: 11px;
+  fill: rgba(255, 255, 255, 0.5);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-weight: 500;
+}
+
+.mmr-line {
+  fill: none;
+  stroke: #f59e0b;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.5));
+}
+
+.mmr-line-glow {
+  fill: none;
+  stroke: #f59e0b;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.15;
+}
+
+.mmr-data-point {
+  fill: #f59e0b;
+  stroke: #1a1f3d;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: r 0.15s ease, filter 0.15s ease;
+}
+
+.mmr-data-point:hover {
+  r: 6;
+  filter: drop-shadow(0 0 8px #f59e0b);
+}
+
+/* Cursor Tracker (MagnetBear logo) */
+.mmr-cursor-tracker {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  transition: opacity 0.15s ease;
+  opacity: 0;
+}
+
+.mmr-cursor-tracker.active {
+  opacity: 1;
+}
+
+.mmr-cursor-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #f59e0b;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+  background: #1a1f3d;
+}
+
+.mmr-cursor-line {
+  position: absolute;
+  width: 2px;
+  background: linear-gradient(180deg, #f59e0b, transparent);
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* Tooltip */
+.mmr-tooltip {
+  position: absolute;
+  background: linear-gradient(135deg, rgba(26, 31, 61, 0.98), rgba(20, 24, 50, 0.98));
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 10px;
+  padding: 1rem;
+  min-width: 220px;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(245, 158, 11, 0.1);
+}
+
+.mmr-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mmr-tooltip-date {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mmr-tooltip-rank {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.mmr-tooltip-division {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.mmr-tooltip-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.mmr-tooltip-stat {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.mmr-tooltip-stat-label {
+  color: var(--muted);
+}
+
+.mmr-tooltip-stat-value {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mmr-tooltip-stat-value.mmr {
+  color: #f59e0b;
+}
+
+.mmr-tooltip-stat-value.gc-diff {
+  color: #f87171;
+}
+
+.mmr-tooltip-stat-value.gc-diff.positive {
+  color: #4ade80;
+}
+
+.mmr-tooltip-estimated {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+/* Footer */
+.mmr-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.mmr-footer-text {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.mmr-footer-link {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mmr-footer-link:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.mmr-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.mmr-back-link:hover {
+  background: var(--panel2);
+  border-color: var(--border-strong);
+}
+
+.mmr-last-updated {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Instructions */
+.mmr-instructions {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(83, 213, 254, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mmr-instructions::before {
+  content: '💡';
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mmr-page {
+    padding: 1rem;
+  }
+
+  .mmr-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .mmr-stats-bar {
+    justify-content: center;
+  }
+
+  .mmr-stat {
+    border-right: none;
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .mmr-chart-container {
+    height: 250px;
+  }
+
+  .mmr-tooltip {
+    min-width: 180px;
+  }
+
+  .mmr-footer {
+    flex-direction: column;
+    text-align: center;
+  }
+}

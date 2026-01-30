@@ -1,0 +1,51 @@
+name: Update MMR Data
+
+on:
+  # Run every hour
+  schedule:
+    - cron: '0 * * * *'  # Every hour at minute 0
+  
+  # Allow manual trigger from GitHub UI
+  workflow_dispatch:
+
+# Permissions needed to commit back to repo
+permissions:
+  contents: write
+
+jobs:
+  update-mmr:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          playwright install chromium
+          playwright install-deps chromium
+      
+      - name: Fetch MMR data from Tracker.gg
+        run: python tools/playwright_fetch_mmr.py
+        env:
+          TRACKER_URL: "https://rocketleague.tracker.network/rocket-league/profile/epic/MaGnetBear/mmr?playlist=28"
+      
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --quiet data/mmr-data.json || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push if changed
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/mmr-data.json
+          git commit -m "🎮 Auto-update MMR data [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git push
