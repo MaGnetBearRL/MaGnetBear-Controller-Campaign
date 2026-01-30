@@ -6,5 +6,8 @@
 # Cursor context (local only)
 CURSOR_CONTEXT.md
 
+# Local docs (not for public repo)
+/docs/
+
 # Temp data files
 /data/trn-raw.json
