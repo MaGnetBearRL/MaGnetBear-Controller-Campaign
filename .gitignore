@@ -1,10 +1,10 @@
-# Local dev tools (keep repo clean, only include what GitHub Action needs)
+# Local dev tools - only include scripts, not cookies
 /tools/*
-!/tools/playwright_fetch_mmr.py
+!/tools/update_mmr.py
+!/tools/convert_trn_data.py
 
-# Local dev docs
+# Cursor context (local only)
 CURSOR_CONTEXT.md
-/docs/
 
 # Temp data files
 /data/trn-raw.json

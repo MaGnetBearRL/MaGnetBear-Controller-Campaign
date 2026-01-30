@@ -1,14 +1,13 @@
 name: Update MMR Data
 
 on:
-  # Run every hour
+  # Run every 30 minutes
   schedule:
-    - cron: '0 * * * *'  # Every hour at minute 0
+    - cron: '*/30 * * * *'
   
-  # Allow manual trigger from GitHub UI
+  # Allow manual trigger
   workflow_dispatch:
 
-# Permissions needed to commit back to repo
 permissions:
   contents: write
 
@@ -25,16 +24,112 @@ jobs:
         with:
           python-version: '3.11'
       
-      - name: Install Playwright
-        run: |
-          pip install playwright
-          playwright install chromium
-          playwright install-deps chromium
+      - name: Install dependencies
+        run: pip install cloudscraper
       
-      - name: Fetch MMR data from Tracker.gg
-        run: python tools/playwright_fetch_mmr.py
-        env:
-          TRACKER_URL: "https://rocketleague.tracker.network/rocket-league/profile/epic/MaGnetBear/mmr?playlist=28"
+      - name: Decode cookies from secret
+        run: |
+          echo "${{ secrets.TRN_COOKIES }}" | base64 -d > tools/cookies.txt
+      
+      - name: Fetch and update MMR data
+        run: |
+          python -c "
+          import cloudscraper
+          import http.cookiejar
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          COOKIES_FILE = Path('tools/cookies.txt')
+          OUTPUT_FILE = Path('data/mmr-data.json')
+          API_URL = 'https://api.tracker.gg/api/v1/rocket-league/player-history/mmr/41100349'
+          PLAYLIST_ID = 28
+          GC1_THRESHOLD = 1435
+
+          RANK_THRESHOLDS = [
+              (1862, 'Supersonic Legend'), (1635, 'Grand Champion III'), (1535, 'Grand Champion II'),
+              (1435, 'Grand Champion I'), (1176, 'Champion III'), (1096, 'Champion II'),
+              (1016, 'Champion I'), (936, 'Diamond III'), (856, 'Diamond II'), (776, 'Diamond I'),
+              (696, 'Platinum III'), (616, 'Platinum II'), (556, 'Platinum I'),
+              (496, 'Gold III'), (436, 'Gold II'), (376, 'Gold I'),
+              (316, 'Silver III'), (256, 'Silver II'), (196, 'Silver I'),
+              (136, 'Bronze III'), (76, 'Bronze II'), (0, 'Bronze I'),
+          ]
+
+          RANK_COLORS = {
+              'Bronze': 'rgba(139, 90, 43, 0.25)', 'Silver': 'rgba(169, 169, 169, 0.25)',
+              'Gold': 'rgba(212, 175, 55, 0.25)', 'Platinum': 'rgba(0, 182, 182, 0.25)',
+              'Diamond': 'rgba(37, 161, 213, 0.25)', 'Champion': 'rgba(142, 89, 225, 0.25)',
+              'Grand Champion': 'rgba(227, 150, 68, 0.25)', 'Supersonic Legend': 'rgba(251, 163, 177, 0.25)',
+          }
+
+          def get_rank(mmr):
+              for i, (threshold, rank) in enumerate(RANK_THRESHOLDS):
+                  if mmr >= threshold:
+                      next_t = RANK_THRESHOLDS[i - 1][0] if i > 0 else threshold + 200
+                      div = min(4, int((mmr - threshold) / ((next_t - threshold) / 4)) + 1)
+                      return rank, div
+              return 'Unranked', 0
+
+          # Load cookies
+          jar = http.cookiejar.MozillaCookieJar(str(COOKIES_FILE))
+          jar.load(ignore_discard=True, ignore_expires=True)
+          print(f'Loaded {len(list(jar))} cookies')
+
+          # Fetch data
+          scraper = cloudscraper.create_scraper()
+          scraper.cookies = jar
+          response = scraper.get(API_URL, headers={'Accept': 'application/json', 'Origin': 'https://rocketleague.tracker.network', 'Referer': 'https://rocketleague.tracker.network/'}, timeout=30)
+          print(f'Response: {response.status_code}')
+
+          if response.status_code != 200:
+              print('Failed to fetch data')
+              exit(1)
+
+          api_data = response.json()
+          data = api_data.get('data', {})
+          rumble_data = data.get(str(PLAYLIST_ID)) or data.get(PLAYLIST_ID)
+
+          if not rumble_data:
+              print('No Rumble data found')
+              exit(1)
+
+          points = []
+          for e in rumble_data:
+              if e.get('rating') and e.get('collectDate'):
+                  r, d = get_rank(e['rating'])
+                  points.append({'date': e['collectDate'], 'mmr': e['rating'], 'rank': r, 'division': d})
+          points.sort(key=lambda x: x['date'])
+
+          latest = points[-1]
+          r, d = get_rank(latest['mmr'])
+          mmr_vals = [p['mmr'] for p in points]
+
+          bands = []
+          for i, (t, rank) in enumerate(RANK_THRESHOLDS):
+              nt = RANK_THRESHOLDS[i-1][0] if i > 0 else t + 200
+              if nt >= min(mmr_vals) - 50 and t <= max(mmr_vals) + 50:
+                  color = next((c for k, c in RANK_COLORS.items() if rank.startswith(k)), 'rgba(100,100,100,0.25)')
+                  if not any(b['name'] == rank for b in bands):
+                      bands.append({'name': rank, 'minMmr': t, 'maxMmr': nt, 'color': color})
+          bands.reverse()
+
+          output = {
+              'profile': {'platform': 'epic', 'platformUsername': 'MaGnetBear', 'playlist': 'Rumble', 'playlistId': PLAYLIST_ID},
+              'currentRating': {'mmr': latest['mmr'], 'rank': r, 'division': f'Division {d}', 'matches': len(points)},
+              'rankThresholds': {'gc1': 1435, 'gc2': 1535, 'gc3': 1635, 'ssl': 1862},
+              'rankBands': bands,
+              'dataPoints': points,
+              'lastUpdated': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
+          }
+
+          with open(OUTPUT_FILE, 'w') as f:
+              json.dump(output, f, indent=2)
+
+          gc_diff = latest['mmr'] - GC1_THRESHOLD
+          print(f'{r} Division {d} | MMR: {latest[\"mmr\"]} ({gc_diff:+d} from GC1)')
+          print(f'Saved {len(points)} data points')
+          "
       
       - name: Check for changes
         id: git-check
@@ -47,5 +142,5 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add data/mmr-data.json
-          git commit -m "🎮 Auto-update MMR data [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git commit -m "Update MMR data [$(date -u '+%Y-%m-%d %H:%M UTC')]"
           git push
