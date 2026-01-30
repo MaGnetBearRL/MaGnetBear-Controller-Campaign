@@ -16,6 +16,7 @@
   <!-- IMPORTANT: vendor FlipDown CSS must load BEFORE campaign.css so our overrides win -->
   <link rel="stylesheet" href="css/vendor/flipdown/flipdown.css?v=mb6" />
   <link rel="stylesheet" href="css/campaign.css?v=mb6" />
+  <link rel="stylesheet" href="css/mmr-tracker.css?v=mb7" />
 
   <meta name="description" content="Status updates and a respectful community nudge while MaGnetBear’s controller is being repaired." />
 </head>
@@ -77,6 +78,7 @@
         <button class="btn ghost" id="updatesBtn" type="button">UPDATES</button>
         <a class="btn ghost" href="#posts">CRASHOUT POSTING</a>
         <a class="btn ghost" href="#signatureWall">SIGNATURES</a>
+        <a class="btn ghost" href="#mmrTracker">ROAD TO GC</a>
         <button class="btn ghost" id="contactOpenBtn" type="button">CONTACT US</button>
       </div>
 
@@ -112,6 +114,83 @@
           <p class="muted" id="sig_empty" style="display:none;">No approved names yet. Be the first.</p>
         </div>
       </div>
+    </section>
+
+    <section class="panel" id="mmrTracker">
+      <h2>ROAD TO GRAND CHAMPION</h2>
+      <p class="muted">
+        Live MMR tracking for Rumble. Auto-updates from 
+        <a href="https://rocketleague.tracker.network/rocket-league/profile/epic/MaGnetBear/mmr?playlist=28" target="_blank" rel="noopener">Tracker Network</a>.
+        <a href="RoadToGC.html" class="mmr-fullscreen-link">View fullscreen →</a>
+      </p>
+
+      <!-- Stats Summary (compact) -->
+      <div class="mmr-stats-bar" id="statsBar">
+        <div class="mmr-stat">
+          <span class="mmr-stat-label">Current Rank</span>
+          <span class="mmr-stat-value rank" id="statRank">—</span>
+        </div>
+        <div class="mmr-stat">
+          <span class="mmr-stat-label">Division</span>
+          <span class="mmr-stat-value" id="statDivision">—</span>
+        </div>
+        <div class="mmr-stat">
+          <span class="mmr-stat-label">Rating</span>
+          <span class="mmr-stat-value" id="statRating">—</span>
+        </div>
+        <div class="mmr-stat">
+          <span class="mmr-stat-label">To GC1</span>
+          <span class="mmr-stat-value negative" id="statToGC">—</span>
+        </div>
+        <div class="mmr-stat">
+          <span class="mmr-stat-label">Matches</span>
+          <span class="mmr-stat-value" id="statMatches">—</span>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="mmr-chart-wrapper">
+        <div class="mmr-chart-header">
+          <h3 class="mmr-chart-title">MMR History</h3>
+          <div class="mmr-playlist-badge" id="playlistBadge">Rumble</div>
+        </div>
+
+        <div class="mmr-chart-container" id="chartContainer">
+          <svg class="mmr-chart-svg" id="chartSvg" preserveAspectRatio="xMidYMid meet"></svg>
+
+          <!-- Cursor tracker with MagnetBear logo -->
+          <div class="mmr-cursor-tracker" id="cursorTracker">
+            <img class="mmr-cursor-logo" src="assets/ico/magnetbear-48x48.png" alt="" />
+            <div class="mmr-cursor-line" id="cursorLine"></div>
+          </div>
+
+          <!-- Tooltip -->
+          <div class="mmr-tooltip" id="tooltip">
+            <div class="mmr-tooltip-date" id="tooltipDate">—</div>
+            <div class="mmr-tooltip-rank" id="tooltipRank">—</div>
+            <div class="mmr-tooltip-division" id="tooltipDivision">—</div>
+            <div class="mmr-tooltip-stats">
+              <div class="mmr-tooltip-stat">
+                <span class="mmr-tooltip-stat-label">MMR</span>
+                <span class="mmr-tooltip-stat-value mmr" id="tooltipMmr">—</span>
+              </div>
+              <div class="mmr-tooltip-stat">
+                <span class="mmr-tooltip-stat-label">From GC1</span>
+                <span class="mmr-tooltip-stat-value gc-diff" id="tooltipGcDiff">—</span>
+              </div>
+            </div>
+            <div class="mmr-tooltip-estimated" id="tooltipEstimated"></div>
+          </div>
+        </div>
+
+        <div class="mmr-instructions">
+          Hover over the chart to see MMR at any point. Click a data point for exact stats.
+        </div>
+      </div>
+
+      <p class="muted mmr-last-updated-text">
+        <span id="lastUpdated"></span>
+      </p>
     </section>
 
     <section class="panel" id="posts">
@@ -273,5 +352,8 @@
 
   <!-- Your site JS -->
   <script type="module" src="js/main.js?v=mb6"></script>
+  
+  <!-- MMR Chart Module -->
+  <script type="module" src="js/modules/mmr-chart.js?v=mb7"></script>
 </body>
 </html>
