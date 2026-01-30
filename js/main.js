@@ -1,5 +1,4 @@
 import { SETTINGS } from "./config.js";
-import { initShare } from "./modules/share.js";
 import { initMessageGenerator } from "./modules/message-generator.js";
 import { initSignatureWall } from "./modules/signatures.js";
 import { initUpdatesFeed } from "./modules/updates.js";
@@ -31,7 +30,11 @@ safeInit("Countdown", async () => {
   return mod.initCountdown(SETTINGS);
 });
 
-safeInit("Share", () => initShare(SETTINGS));
+// Cache-bust Share module
+safeInit("Share", async () => {
+  const mod = await import(`./modules/share.js?v=${SETTINGS.buildVersion}`);
+  return mod.initShare(SETTINGS);
+});
 safeInit("MessageGenerator", () => initMessageGenerator(SETTINGS));
 safeInit("SignatureWall", () => initSignatureWall(SETTINGS));
 

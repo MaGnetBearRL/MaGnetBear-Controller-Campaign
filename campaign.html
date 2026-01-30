@@ -10,12 +10,12 @@
   <link rel="icon" type="image/png" href="/assets/ico/favicon-16x16.png" sizes="16x16">
   <link rel="apple-touch-icon" href="/assets/ico/apple-touch-icon.png">
 
-  <link rel="stylesheet" href="css/tokens.css?v=mb4" />
-  <link rel="stylesheet" href="css/base.css?v=mb4" />
+  <link rel="stylesheet" href="css/tokens.css?v=mb6" />
+  <link rel="stylesheet" href="css/base.css?v=mb6" />
 
   <!-- IMPORTANT: vendor FlipDown CSS must load BEFORE campaign.css so our overrides win -->
-  <link rel="stylesheet" href="css/vendor/flipdown/flipdown.css?v=mb4" />
-  <link rel="stylesheet" href="css/campaign.css?v=mb4" />
+  <link rel="stylesheet" href="css/vendor/flipdown/flipdown.css?v=mb6" />
+  <link rel="stylesheet" href="css/campaign.css?v=mb6" />
 
   <meta name="description" content="Status updates and a respectful community nudge while MaGnetBear’s controller is being repaired." />
 </head>
@@ -248,10 +248,30 @@
     </div>
   </div>
 
+  <!-- SHARE MODAL -->
+  <div id="shareModal" class="modalOverlay" hidden aria-hidden="true">
+    <div class="modalDialog modalDialogSmall" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+      <div class="modalHeader">
+        <h2 id="shareModalTitle">Share</h2>
+        <button class="btn ghost small modalClose" id="share_closeBtn" type="button" aria-label="Close share">✕</button>
+      </div>
+
+      <p class="muted">Copy the link below to share this campaign.</p>
+
+      <div class="shareUrlRow">
+        <label class="fieldLabel" for="share_url">URL</label>
+        <div class="shareUrlField">
+          <input id="share_url" class="field" type="text" readonly />
+          <button class="btn primary" id="share_copyBtn" type="button">COPY</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- FlipDown vendor JS (global FlipDown) -->
-  <script src="js/vendor/flipdown/flipdown.js?v=mb4"></script>
+  <script src="js/vendor/flipdown/flipdown.js?v=mb6"></script>
 
   <!-- Your site JS -->
-  <script type="module" src="js/main.js?v=mb4"></script>
+  <script type="module" src="js/main.js?v=mb6"></script>
 </body>
 </html>

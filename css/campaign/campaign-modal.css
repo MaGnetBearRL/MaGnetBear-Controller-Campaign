@@ -62,3 +62,30 @@
   background: rgba(83, 213, 254, 0.12);
   box-shadow: 0 0 12px rgba(83, 213, 254, 0.15);
 }
+
+/* Smaller modal variant (for Share, etc.) */
+.modalDialogSmall {
+  width: min(480px, 100%);
+}
+
+/* Share URL field row */
+.shareUrlRow {
+  margin-top: 12px;
+}
+
+.shareUrlField {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.shareUrlField .field {
+  flex: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+}
+
+.shareUrlField .btn {
+  flex-shrink: 0;
+  min-width: 80px;
+}
