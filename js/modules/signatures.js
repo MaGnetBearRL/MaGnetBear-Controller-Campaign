@@ -1,6 +1,5 @@
 import { $ } from "../dom.js";
 
-const SIGNATURE_GOAL = 5000;
 const CHIP_STAGGER_DELAY = 30; // ms between each chip animation
 const SIGNED_FLAG_KEY = "magnetbear_just_signed";
 const SIGNED_FLAG_EXPIRY = 10 * 60 * 1000; // 10 minutes
@@ -12,12 +11,17 @@ const SHEET_CSV_URL =
 // Column headers we care about
 const COL_APPROVAL_STATUS = "approval_status";
 const COL_PUBLIC_DISPLAY_NAME = "public_display_name";
-const COL_COMMENT = "Optional: Short message of support! (Manual review enabled. No slurs, no threats, no throwing.)";
+// Try to match the comment column flexibly
+const COL_COMMENT_PATTERNS = [
+  "Optional: Short message of support!",
+  "Optional: Short message",
+  "Short message of support",
+];
 
 // Approval statuses that count as "approved" for display
 const APPROVED_STATUSES = new Set(["approved", "auto_approved"]);
 
-// Milestone thresholds
+// Milestone thresholds (in order)
 const MILESTONES = [
   { count: 50, icon: "🎉", text: "50 signatures!" },
   { count: 100, icon: "🔥", text: "100 strong!" },
@@ -29,11 +33,49 @@ const MILESTONES = [
 ];
 
 /**
+ * Find the comment column header (flexible matching)
+ */
+function findCommentColumn(headers) {
+  // First try exact patterns
+  for (const header of headers) {
+    const lower = header.toLowerCase();
+    for (const pattern of COL_COMMENT_PATTERNS) {
+      if (lower.includes(pattern.toLowerCase())) {
+        console.log(`[SignatureWall] Matched comment column: "${header}"`);
+        return header;
+      }
+    }
+  }
+  // Fallback: look for anything with "message" or "support"
+  for (const header of headers) {
+    const lower = header.toLowerCase();
+    if (lower.includes("message") || lower.includes("optional")) {
+      console.log(`[SignatureWall] Fallback matched comment column: "${header}"`);
+      return header;
+    }
+  }
+  console.warn("[SignatureWall] No comment column found!");
+  return null;
+}
+
+/**
+ * Sanitize comment for use in data attribute (escape quotes, limit length)
+ */
+function sanitizeComment(comment) {
+  if (!comment) return null;
+  // Limit length and clean up
+  let clean = comment.trim().slice(0, 200);
+  // Replace quotes with smart quotes for display
+  clean = clean.replace(/"/g, '"').replace(/'/g, "'");
+  return clean || null;
+}
+
+/**
  * Parse CSV text into array of objects
  */
 function parseCSV(csvText) {
   const lines = csvText.split("\n");
-  if (lines.length < 2) return [];
+  if (lines.length < 2) return { headers: [], rows: [] };
 
   const headers = parseCSVLine(lines[0]);
   const rows = [];
@@ -52,7 +94,7 @@ function parseCSV(csvText) {
     rows.push(row);
   }
 
-  return rows;
+  return { headers, rows };
 }
 
 /**
@@ -102,23 +144,33 @@ async function fetchSignaturesFromSheet() {
   }
 
   const csvText = await resp.text();
-  const rows = parseCSV(csvText);
+  const { headers, rows } = parseCSV(csvText);
+
+  // Find the comment column dynamically
+  const commentColumn = findCommentColumn(headers);
+  console.log("[SignatureWall] Headers found:", headers);
+  console.log("[SignatureWall] Comment column:", commentColumn);
 
   let totalSignatures = rows.length;
   const approvedEntries = [];
+  let commentsFound = 0;
 
   for (const row of rows) {
     const status = (row[COL_APPROVAL_STATUS] || "").trim().toLowerCase();
     const name = (row[COL_PUBLIC_DISPLAY_NAME] || "").trim();
-    const comment = (row[COL_COMMENT] || "").trim();
+    const comment = commentColumn ? (row[commentColumn] || "").trim() : "";
 
     if (APPROVED_STATUSES.has(status) && name) {
+      const cleanComment = sanitizeComment(comment);
+      if (cleanComment) commentsFound++;
       approvedEntries.push({
         name,
-        comment: comment || null,
+        comment: cleanComment,
       });
     }
   }
+
+  console.log(`[SignatureWall] Found ${commentsFound} entries with comments`);
 
   return {
     total: totalSignatures,
@@ -199,24 +251,62 @@ function animateCounter(el, startVal, endVal, duration = 600) {
 }
 
 /**
- * Update the progress bar
+ * Get the previous and next milestone for a given count
+ */
+function getMilestoneProgress(total) {
+  let prevMilestone = 0;
+  let nextMilestone = MILESTONES[0].count;
+
+  for (let i = 0; i < MILESTONES.length; i++) {
+    if (total >= MILESTONES[i].count) {
+      prevMilestone = MILESTONES[i].count;
+      nextMilestone = MILESTONES[i + 1]?.count || MILESTONES[i].count;
+    } else {
+      nextMilestone = MILESTONES[i].count;
+      break;
+    }
+  }
+
+  // If we've hit the final milestone
+  if (total >= MILESTONES[MILESTONES.length - 1].count) {
+    return { prevMilestone, nextMilestone, percent: 100 };
+  }
+
+  const range = nextMilestone - prevMilestone;
+  const progress = total - prevMilestone;
+  const percent = range > 0 ? (progress / range) * 100 : 0;
+
+  return { prevMilestone, nextMilestone, percent: Math.min(percent, 100) };
+}
+
+/**
+ * Update the progress bar (tracks to NEXT milestone, not 5000)
  */
 function updateProgressBar(total) {
   const fillEl = $("sig_progress_fill");
   const percentEl = $("sig_progress_percent");
   const goalCurrentEl = $("sig_goal_current");
+  const goalTargetEl = $("sig_goal_target");
 
-  const percent = Math.min((total / SIGNATURE_GOAL) * 100, 100);
+  const { nextMilestone, percent } = getMilestoneProgress(total);
   const percentRounded = Math.round(percent * 10) / 10;
 
+  // Update the current count
   if (goalCurrentEl) {
     goalCurrentEl.textContent = String(total);
   }
 
+  // Update the target (next milestone)
+  if (goalTargetEl) {
+    goalTargetEl.textContent = nextMilestone.toLocaleString();
+  }
+
+  // Update percent text
   if (percentEl) {
     percentEl.textContent = `${percentRounded}%`;
   }
 
+  // Animate the fill bar
   if (fillEl) {
     requestAnimationFrame(() => {
       fillEl.style.width = `${percent}%`;
@@ -271,6 +361,55 @@ function scrollToSignatureWall() {
   if (section) {
     section.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+}
+
+/**
+ * Initialize tooltip system for comment chips
+ * Creates a single tooltip element appended to body (avoids overflow clipping)
+ */
+function initTooltips() {
+  // Create tooltip element
+  let tooltip = document.querySelector(".sigTooltip");
+  if (!tooltip) {
+    tooltip = document.createElement("div");
+    tooltip.className = "sigTooltip";
+    document.body.appendChild(tooltip);
+  }
+
+  // Event delegation for chip hovers
+  document.addEventListener("mouseover", (e) => {
+    const chip = e.target.closest(".sigChip[data-comment]");
+    if (!chip) return;
+
+    const comment = chip.getAttribute("data-comment");
+    if (!comment) return;
+
+    tooltip.textContent = `"${comment}"`;
+
+    // Position tooltip below the chip
+    const rect = chip.getBoundingClientRect();
+    const tooltipWidth = 240; // approximate
+    
+    let left = rect.left + rect.width / 2 - tooltipWidth / 2;
+    // Keep tooltip within viewport
+    left = Math.max(10, Math.min(left, window.innerWidth - tooltipWidth - 10));
+    
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${rect.bottom + 8}px`;
+    tooltip.style.maxWidth = `${tooltipWidth}px`;
+
+    // Show
+    requestAnimationFrame(() => {
+      tooltip.classList.add("visible");
+    });
+  });
+
+  document.addEventListener("mouseout", (e) => {
+    const chip = e.target.closest(".sigChip[data-comment]");
+    if (!chip) return;
+
+    tooltip.classList.remove("visible");
+  });
 }
 
 export async function initSignatureWall(settings) {
@@ -328,7 +467,7 @@ export async function initSignatureWall(settings) {
       approvedEl.textContent = String(approved);
     }
 
-    // Update progress bar
+    // Update progress bar (now tracks to next milestone)
     updateProgressBar(total);
 
     // Render milestones
@@ -344,6 +483,9 @@ export async function initSignatureWall(settings) {
 
     if (emptyEl) emptyEl.style.display = "none";
 
+    // Initialize tooltip system
+    initTooltips();
+
     // Render chips with staggered animation
     const limit = settings.signatureLimit || 250;
     const displayEntries = entries.slice(0, limit);
@@ -355,7 +497,9 @@ export async function initSignatureWall(settings) {
 
       // Add comment as data attribute for tooltip
       if (entry.comment) {
-        chip.setAttribute("data-comment", `"${entry.comment}"`);
+        // Don't add extra quotes - the CSS handles the styling
+        chip.setAttribute("data-comment", entry.comment);
+        console.log(`[SignatureWall] Chip with comment: ${entry.name} -> "${entry.comment}"`);
       }
 
       // Stagger the animation delay
