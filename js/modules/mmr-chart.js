@@ -623,9 +623,9 @@ function renderControllerLabel(container, imgLeft, imgTop, imgSize) {
     <span class="controller-label-date">${dateStr}</span>
   `;
   
-  // Position to the left of the controller image
+  // Position to the left of the controller image (with more gap)
   const labelWidth = 110;
-  const left = imgLeft - labelWidth - 12;
+  const left = imgLeft - labelWidth - 24;
   const top = imgTop + (imgSize / 2) - 28; // Vertically center with image
   
   label.style.cssText = `
