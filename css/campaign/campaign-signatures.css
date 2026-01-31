@@ -1,0 +1,280 @@
+/* ============================================
+   SIGNATURE WALL
+   ============================================ */
+
+/* Main wall container - stacked layout */
+.sigWall {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* The signature chips container */
+.sigWallDisplay {
+  padding: 16px;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(83, 213, 254, 0.05), rgba(0, 0, 255, 0.03)),
+    var(--card);
+  border: 1px solid rgba(83, 213, 254, 0.12);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 255, 0.05) inset;
+  min-height: 120px;
+}
+
+.sigWallDisplay .subhead {
+  margin-bottom: 14px;
+}
+
+/* Signature chip list */
+.sigList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-content: flex-start;
+}
+
+/* Individual signature chip */
+.sigChip {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(83, 213, 254, 0.18);
+  background:
+    linear-gradient(135deg, rgba(83, 213, 254, 0.08), rgba(0, 0, 255, 0.05));
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  
+  /* Animation setup - start hidden */
+  opacity: 0;
+  transform: translateY(12px) scale(0.9);
+  animation: sigChipEnter 0.4s ease forwards;
+}
+
+/* Staggered entrance animation */
+@keyframes sigChipEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Hover effect */
+.sigChip:hover {
+  border-color: rgba(83, 213, 254, 0.4);
+  background:
+    linear-gradient(135deg, rgba(83, 213, 254, 0.14), rgba(0, 0, 255, 0.08));
+  box-shadow: 0 0 12px rgba(83, 213, 254, 0.15);
+}
+
+/* Empty state */
+.sigEmpty {
+  color: var(--muted);
+  font-style: italic;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* ============================================
+   TOTALS / STATS BAR (below the wall)
+   ============================================ */
+
+.sigTotals {
+  padding: 16px;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(83, 213, 254, 0.05), rgba(0, 0, 255, 0.03)),
+    var(--card);
+  border: 1px solid rgba(83, 213, 254, 0.12);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 255, 0.05) inset;
+}
+
+/* Stats row - horizontal on desktop, stacked on mobile */
+.sigStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+}
+
+.sigStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sigStatLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.sigStatValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Animated counter - digit rolls */
+.sigStatValue.counting {
+  animation: counterPulse 0.3s ease;
+}
+
+@keyframes counterPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); color: var(--accent); }
+}
+
+/* ============================================
+   PROGRESS BAR (Goal: 5,000 signatures)
+   ============================================ */
+
+.sigProgress {
+  flex: 1;
+  min-width: 200px;
+}
+
+.sigProgressLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.sigProgressGoal {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sigProgressTrack {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(83, 213, 254, 0.12);
+  overflow: hidden;
+  position: relative;
+}
+
+.sigProgressFill {
+  height: 100%;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg,
+      rgba(83, 213, 254, 0.6),
+      rgba(83, 213, 254, 0.9),
+      rgba(83, 213, 254, 0.6)
+    );
+  background-size: 200% 100%;
+  box-shadow:
+    0 0 12px rgba(83, 213, 254, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: progressShimmer 2s linear infinite;
+  min-width: 4px;
+}
+
+@keyframes progressShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Progress percentage text overlay */
+.sigProgressPercent {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================
+   POST-SUBMISSION CELEBRATION
+   ============================================ */
+
+/* When user just signed - highlight the new signature */
+.sigChip.sigNew {
+  animation: sigChipNew 0.6s ease forwards;
+  border-color: rgba(83, 213, 254, 0.5);
+  box-shadow:
+    0 0 20px rgba(83, 213, 254, 0.3),
+    0 0 40px rgba(83, 213, 254, 0.15);
+}
+
+@keyframes sigChipNew {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Counter increment animation */
+.sigStatValue.sigIncrement {
+  animation: counterIncrement 0.8s ease;
+}
+
+@keyframes counterIncrement {
+  0% {
+    transform: scale(1);
+    color: var(--text);
+  }
+  30% {
+    transform: scale(1.3);
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(83, 213, 254, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    color: var(--text);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 600px) {
+  .sigStats {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .sigProgress {
+    order: -1; /* Put progress bar first on mobile */
+  }
+  
+  .sigStat {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .sigStatValue {
+    font-size: 20px;
+  }
+}

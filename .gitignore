@@ -1,7 +1,9 @@
-# Local dev tools - only include scripts, not cookies
+# Local dev tools - only include scripts, not cookies/caches
 /tools/*
 !/tools/update_mmr.py
 !/tools/convert_trn_data.py
+!/tools/update_signatures.py
+!/tools/feedgen.py
 
 # Cursor context (local only)
 CURSOR_CONTEXT.md

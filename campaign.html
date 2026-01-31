@@ -10,12 +10,12 @@
   <link rel="icon" type="image/png" href="/assets/ico/favicon-16x16.png" sizes="16x16">
   <link rel="apple-touch-icon" href="/assets/ico/apple-touch-icon.png">
 
-  <link rel="stylesheet" href="css/tokens.css?v=mb6" />
-  <link rel="stylesheet" href="css/base.css?v=mb6" />
+  <link rel="stylesheet" href="css/tokens.css?v=mb8" />
+  <link rel="stylesheet" href="css/base.css?v=mb8" />
 
   <!-- IMPORTANT: vendor FlipDown CSS must load BEFORE campaign.css so our overrides win -->
-  <link rel="stylesheet" href="css/vendor/flipdown/flipdown.css?v=mb6" />
-  <link rel="stylesheet" href="css/campaign.css?v=mb6" />
+  <link rel="stylesheet" href="css/vendor/flipdown/flipdown.css?v=mb8" />
+  <link rel="stylesheet" href="css/campaign.css?v=mb8" />
   <link rel="stylesheet" href="css/mmr-tracker.css?v=mb7" />
 
   <meta name="description" content="Status updates and a respectful community nudge while MaGnetBear’s controller is being repaired." />
@@ -91,27 +91,47 @@
     </section>
 
     <section class="panel" id="signatureWall">
-      <h2>Signature wall</h2>
+      <h2>Signature Wall</h2>
       <p class="muted">
         Only auto-generated, anonymous, and approved user submitted display names show up here. Be patient with approval.
       </p>
 
-      <div class="grid">
-        <div class="card">
-          <h3 class="subhead">Totals</h3>
-          <p class="big">
-            Total signatures: <span id="sig_total">0</span><br />
-            Approved names: <span id="sig_approved">0</span>
-          </p>
-          <p class="muted">
-            If your entry can't be approved, it still counts — it will appear as Anonymous Supporter.
-          </p>
+      <div class="sigWall">
+        <!-- Signature chips display (main wall) -->
+        <div class="sigWallDisplay">
+          <h3 class="subhead">Approved Supporters</h3>
+          <div id="sig_list" class="sigList"></div>
+          <p class="sigEmpty" id="sig_empty">No approved names yet. Be the first to sign!</p>
         </div>
 
-        <div class="card">
-          <h3 class="subhead">Approved supporters</h3>
-          <div id="sig_list" class="sigList"></div>
-          <p class="muted" id="sig_empty" style="display:none;">No approved names yet. Be the first.</p>
+        <!-- Stats + Progress bar below -->
+        <div class="sigTotals">
+          <div class="sigStats">
+            <div class="sigStat">
+              <span class="sigStatLabel">Total Signatures</span>
+              <span class="sigStatValue" id="sig_total">0</span>
+            </div>
+
+            <div class="sigStat">
+              <span class="sigStatLabel">Approved Names</span>
+              <span class="sigStatValue" id="sig_approved">0</span>
+            </div>
+
+            <div class="sigProgress">
+              <div class="sigProgressLabel">
+                <span>Progress to goal</span>
+                <span class="sigProgressGoal"><span id="sig_goal_current">0</span> / 5,000</span>
+              </div>
+              <div class="sigProgressTrack">
+                <div class="sigProgressFill" id="sig_progress_fill" style="width: 0%;"></div>
+                <span class="sigProgressPercent" id="sig_progress_percent">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="muted" style="margin-top: 12px; font-size: 12px;">
+            If your entry can't be approved, it still counts — it will appear as Anonymous Supporter.
+          </p>
         </div>
       </div>
     </section>
@@ -346,10 +366,10 @@
   </div>
 
   <!-- FlipDown vendor JS (global FlipDown) -->
-  <script src="js/vendor/flipdown/flipdown.js?v=mb6"></script>
+  <script src="js/vendor/flipdown/flipdown.js?v=mb8"></script>
 
   <!-- Your site JS -->
-  <script type="module" src="js/main.js?v=mb6"></script>
+  <script type="module" src="js/main.js?v=mb8"></script>
   
   <!-- MMR Chart Module -->
   <script type="module" src="js/modules/mmr-chart.js?v=mb7"></script>

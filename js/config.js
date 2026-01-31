@@ -1,7 +1,7 @@
 export const SETTINGS = {
   // Bump this when you want to force-refresh module caches site-wide.
   // You can also use a git short SHA here later if you want.
-  buildVersion: "mb6",
+  buildVersion: "mb8",
 
   // Toggle extra console logging in main.js without editing other files
   debug: false,
