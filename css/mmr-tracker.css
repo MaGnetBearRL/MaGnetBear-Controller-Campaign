@@ -485,3 +485,73 @@
 .controller-dot-glow {
   animation: controllerDotPulse 2s ease-in-out infinite;
 }
+
+/* Permanent controller label */
+.controller-marker-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  
+  background: linear-gradient(135deg, rgba(26, 31, 61, 0.95), rgba(20, 24, 50, 0.95));
+  border: 1px solid rgba(255, 105, 180, 0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(255, 105, 180, 0.15);
+}
+
+.controller-label-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ff69b4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+}
+
+.controller-label-subtitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ff69b4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+}
+
+.controller-label-date {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Controller gain stat special styling */
+.mmr-stat.controller-gain {
+  border-left: 1px solid rgba(255, 105, 180, 0.3);
+  padding-left: 1.5rem;
+  margin-left: auto;
+}
+
+.mmr-stat.controller-gain .mmr-stat-label {
+  color: #ff69b4;
+}
+
+.mmr-stat.controller-gain .mmr-stat-value {
+  color: #ff69b4;
+  text-shadow: 0 0 8px rgba(255, 105, 180, 0.4);
+}
+
+/* Responsive adjustments for controller label */
+@media (max-width: 768px) {
+  .controller-marker-label {
+    display: none; /* Hide on mobile to prevent clipping */
+  }
+  
+  .mmr-stat.controller-gain {
+    border-left: none;
+    padding-left: 0;
+    margin-left: 0;
+  }
+}

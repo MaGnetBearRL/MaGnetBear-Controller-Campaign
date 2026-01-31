@@ -12,6 +12,7 @@ const CONFIG = {
   // Controller acquisition date - the moment everything changed
   controllerDate: '2025-11-28',
   controllerImageUrl: 'assets/img/controller_sm.png',
+  controllerBaseMmr: 797, // MMR when controller was received
   
   colors: {
     line: '#f59e0b',
@@ -112,6 +113,14 @@ function updateStatsBar() {
   gcDiffEl.className = `mmr-stat-value ${gcDiff >= 0 ? 'positive' : 'negative'}`;
   
   document.getElementById('playlistBadge').textContent = chartData.profile.playlist;
+  
+  // Update controller gain stat
+  const controllerGainEl = document.getElementById('statControllerGain');
+  if (controllerGainEl) {
+    const mmrGain = currentRating.mmr - CONFIG.controllerBaseMmr;
+    controllerGainEl.textContent = mmrGain >= 0 ? `+${mmrGain}` : mmrGain.toString();
+    controllerGainEl.className = `mmr-stat-value ${mmrGain >= 0 ? 'positive' : 'negative'}`;
+  }
   
   // Update last updated timestamp
   if (chartData.lastUpdated) {
@@ -541,9 +550,11 @@ function renderControllerDotForeground(group) {
  * Render the controller image overlay (positioned at top of chart, above graph area)
  */
 function renderControllerImage() {
-  // Remove existing controller image if any
+  // Remove existing controller image and label if any
   const existing = document.querySelector('.controller-marker-image');
   if (existing) existing.remove();
+  const existingLabel = document.querySelector('.controller-marker-label');
+  if (existingLabel) existingLabel.remove();
   
   if (!elements.controllerMarkerX) {
     console.log('[MMR Chart] Controller marker position not set, skipping image');
@@ -586,6 +597,46 @@ function renderControllerImage() {
   `;
   
   container.appendChild(img);
+  
+  // Create permanent label/tooltip
+  renderControllerLabel(container, left, top, imgSize);
+}
+
+/**
+ * Render the permanent label for the controller marker
+ */
+function renderControllerLabel(container, imgLeft, imgTop, imgSize) {
+  const label = document.createElement('div');
+  label.className = 'controller-marker-label';
+  
+  // Format the date
+  const controllerDate = new Date(CONFIG.controllerDate);
+  const dateStr = controllerDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+  
+  label.innerHTML = `
+    <span class="controller-label-title">Started Using</span>
+    <span class="controller-label-subtitle">New Controller</span>
+    <span class="controller-label-date">${dateStr}</span>
+  `;
+  
+  // Position to the left of the controller image
+  const labelWidth = 110;
+  const left = imgLeft - labelWidth - 12;
+  const top = imgTop + (imgSize / 2) - 28; // Vertically center with image
+  
+  label.style.cssText = `
+    position: absolute;
+    left: ${left}px;
+    top: ${top}px;
+    pointer-events: none;
+    z-index: 10;
+  `;
+  
+  container.appendChild(label);
 }
 
 /**
