@@ -445,3 +445,42 @@
     text-align: center;
   }
 }
+
+/* ============================================
+   CONTROLLER ACQUISITION MARKER
+   ============================================ */
+
+/* Controller image floating animation */
+@keyframes controllerBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(5deg);
+  }
+}
+
+/* SVG elements get styled via attributes, but we can add hover effects */
+.controller-dot {
+  transition: r 0.2s ease;
+}
+
+.controller-dot:hover {
+  r: 8;
+}
+
+/* Pulsing glow on the dot */
+@keyframes controllerDotPulse {
+  0%, 100% {
+    opacity: 0.3;
+    r: 12;
+  }
+  50% {
+    opacity: 0.5;
+    r: 16;
+  }
+}
+
+.controller-dot-glow {
+  animation: controllerDotPulse 2s ease-in-out infinite;
+}

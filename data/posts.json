@@ -2,6 +2,23 @@
   "items": [
     {
       "date": "2026-01-31",
+      "title": "🎮 DAILY CRASHOUT POST 🎮",
+      "body": "TRAGIC TALES: Controller Edition 💔🎮\n\nHere's the story of how and when I broke my baby, causing this whole catastrophic crisis in my life...",
+      "inlineLink": {
+        "label": "📺 Watch the Tragic Tale",
+        "url": "https://youtube.com/shorts/m7A0WwXhleY?feature=share"
+      },
+      "afterLinkBody": "\n\nAIM I'M SORRY, I SWEAR I DON'T ABUSE MY BABY 🎮💔 REUNITE US ASAP I'M BEGGING. <3",
+      "media": [
+        {
+          "type": "image",
+          "src": "assets/img/tragic_tales_post-img.png",
+          "alt": "Tragic Tales: Controller Edition - The story of how it broke"
+        }
+      ]
+    },
+    {
+      "date": "2026-01-31",
       "title": "Have You Seen my Friend?",
       "body": "Real, it's all so real all of a sudden...\nAccurate Song Vibes:",
       "inlineLink": {

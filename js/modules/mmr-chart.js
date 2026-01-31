@@ -8,11 +8,17 @@ const CONFIG = {
   dataUrl: 'data/mmr-data.json',
   gc1Threshold: 1435,
   padding: { top: 20, right: 20, bottom: 40, left: 60 },
+  
+  // Controller acquisition date - the moment everything changed
+  controllerDate: '2025-11-28',
+  controllerImageUrl: 'assets/img/controller_sm.png',
+  
   colors: {
     line: '#f59e0b',
     lineGlow: 'rgba(245, 158, 11, 0.15)',
     grid: 'rgba(255, 255, 255, 0.05)',
-    text: 'rgba(255, 255, 255, 0.5)'
+    text: 'rgba(255, 255, 255, 0.5)',
+    controllerMarker: '#ff69b4' // Hot pink for the controller marker
   },
   rankColors: {
     'Bronze': 'rgba(139, 90, 43, 0.25)',
@@ -214,6 +220,7 @@ function renderChart() {
   // Create groups for layering
   const bandsGroup = createSvgElement('g', { class: 'bands-group' });
   const gridGroup = createSvgElement('g', { class: 'grid-group' });
+  const controllerMarkerGroup = createSvgElement('g', { class: 'controller-marker-group' });
   const lineGroup = createSvgElement('g', { class: 'line-group' });
   const pointsGroup = createSvgElement('g', { class: 'points-group' });
   const axisGroup = createSvgElement('g', { class: 'axis-group' });
@@ -221,6 +228,7 @@ function renderChart() {
   // Render each layer
   renderRankBands(bandsGroup);
   renderGrid(gridGroup);
+  renderControllerMarker(controllerMarkerGroup);
   renderLine(lineGroup);
   renderDataPoints(pointsGroup);
   renderAxes(axisGroup);
@@ -228,9 +236,13 @@ function renderChart() {
   // Append groups in order
   svg.appendChild(bandsGroup);
   svg.appendChild(gridGroup);
+  svg.appendChild(controllerMarkerGroup);
   svg.appendChild(lineGroup);
   svg.appendChild(pointsGroup);
   svg.appendChild(axisGroup);
+  
+  // Render controller image overlay (HTML, not SVG)
+  renderControllerImage();
 }
 
 /**
@@ -430,6 +442,115 @@ function renderAxes(group) {
     
     currentDate.setMonth(currentDate.getMonth() + 1);
   }
+}
+
+/**
+ * Render the controller acquisition marker (pink vertical line + dot)
+ */
+function renderControllerMarker(group) {
+  const controllerDate = new Date(CONFIG.controllerDate);
+  
+  // Check if date is within chart range
+  if (controllerDate < scales.x.min || controllerDate > scales.x.max) {
+    return; // Controller date not in visible range
+  }
+  
+  const x = scaleX(controllerDate);
+  
+  // Get the MMR at this date by interpolation
+  const interpolated = interpolateDataAtDate(controllerDate);
+  const y = scaleY(interpolated.mmr);
+  
+  // Pink vertical line from bottom to the point
+  const verticalLine = createSvgElement('line', {
+    class: 'controller-vertical-line',
+    x1: x,
+    y1: chartDimensions.height - CONFIG.padding.bottom,
+    x2: x,
+    y2: y,
+    stroke: CONFIG.colors.controllerMarker,
+    'stroke-width': 2,
+    'stroke-dasharray': '6,4',
+    opacity: 0.8
+  });
+  group.appendChild(verticalLine);
+  
+  // Glow effect for the line
+  const lineGlow = createSvgElement('line', {
+    class: 'controller-vertical-line-glow',
+    x1: x,
+    y1: chartDimensions.height - CONFIG.padding.bottom,
+    x2: x,
+    y2: y,
+    stroke: CONFIG.colors.controllerMarker,
+    'stroke-width': 6,
+    opacity: 0.2
+  });
+  group.insertBefore(lineGlow, verticalLine);
+  
+  // Pink dot at the intersection point
+  const dotGlow = createSvgElement('circle', {
+    class: 'controller-dot-glow',
+    cx: x,
+    cy: y,
+    r: 12,
+    fill: CONFIG.colors.controllerMarker,
+    opacity: 0.3
+  });
+  group.appendChild(dotGlow);
+  
+  const dot = createSvgElement('circle', {
+    class: 'controller-dot',
+    cx: x,
+    cy: y,
+    r: 6,
+    fill: CONFIG.colors.controllerMarker,
+    stroke: '#fff',
+    'stroke-width': 2
+  });
+  group.appendChild(dot);
+  
+  // Store position for the controller image
+  elements.controllerMarkerX = x;
+  elements.controllerMarkerY = y;
+}
+
+/**
+ * Render the controller image overlay (positioned above the marker)
+ */
+function renderControllerImage() {
+  // Remove existing controller image if any
+  const existing = document.querySelector('.controller-marker-image');
+  if (existing) existing.remove();
+  
+  if (!elements.controllerMarkerX) return;
+  
+  const container = elements.chartContainer;
+  
+  // Create controller image element
+  const img = document.createElement('img');
+  img.className = 'controller-marker-image';
+  img.src = CONFIG.controllerImageUrl;
+  img.alt = 'Controller Acquired!';
+  
+  // Position above the marker point
+  const imgSize = 48; // Display size (smaller than 512 source)
+  const left = elements.controllerMarkerX - imgSize / 2;
+  const top = elements.controllerMarkerY - imgSize - 16; // 16px above the dot
+  
+  img.style.cssText = `
+    position: absolute;
+    left: ${left}px;
+    top: ${top}px;
+    width: ${imgSize}px;
+    height: ${imgSize}px;
+    pointer-events: none;
+    z-index: 10;
+    filter: drop-shadow(0 0 8px rgba(255, 105, 180, 0.6));
+    animation: controllerBounce 2s ease-in-out infinite;
+  `;
+  
+  container.appendChild(img);
 }
 
 /**

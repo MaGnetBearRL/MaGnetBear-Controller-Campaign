@@ -1,6 +1,6 @@
 import { $ } from "../dom.js";
 
-const POSTS_JS_VERSION = "posts.js v4-time+videoCards";
+const POSTS_JS_VERSION = "posts.js v5-afterLinkBody+shortsRegex";
 
 function safeUrl(url) {
   try {
@@ -26,8 +26,8 @@ function extractYouTubeId(url) {
   m = url.match(/https:\/\/youtu\.be\/([A-Za-z0-9_-]{6,})/);
   if (m) return m[1];
 
-  // /shorts/VIDEO_ID
-  m = url.match(/https:\/\/www\.youtube\.com\/shorts\/([A-Za-z0-9_-]{6,})/);
+  // /shorts/VIDEO_ID (with or without www)
+  m = url.match(/https:\/\/(?:www\.)?youtube\.com\/shorts\/([A-Za-z0-9_-]{6,})/);
   if (m) return m[1];
 
   // /embed/VIDEO_ID
@@ -239,6 +239,11 @@ function renderItem(item) {
 
       body.appendChild(a);
     }
+  }
+
+  // After-link body text support (text that appears after the inline link)
+  if (item.afterLinkBody && typeof item.afterLinkBody === "string") {
+    body.appendChild(document.createTextNode(item.afterLinkBody));
   }
 
   wrap.appendChild(top);
