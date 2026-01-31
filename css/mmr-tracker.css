@@ -119,7 +119,8 @@
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.5rem;
-  overflow: hidden;
+  padding-top: 4rem; /* Extra space for controller image */
+  overflow: visible;
 }
 
 .mmr-chart-header {

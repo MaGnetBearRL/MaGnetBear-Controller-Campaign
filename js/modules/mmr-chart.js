@@ -523,9 +523,16 @@ function renderControllerImage() {
   const existing = document.querySelector('.controller-marker-image');
   if (existing) existing.remove();
   
-  if (!elements.controllerMarkerX) return;
+  if (!elements.controllerMarkerX) {
+    console.log('[MMR Chart] Controller marker position not set, skipping image');
+    return;
+  }
   
   const container = elements.chartContainer;
+  if (!container) {
+    console.warn('[MMR Chart] Chart container not found for controller image');
+    return;
+  }
   
   // Create controller image element
   const img = document.createElement('img');
@@ -533,10 +540,16 @@ function renderControllerImage() {
   img.src = CONFIG.controllerImageUrl;
   img.alt = 'Controller Acquired!';
   
+  // Debug: log when image loads or fails
+  img.onload = () => console.log('[MMR Chart] Controller image loaded successfully');
+  img.onerror = () => console.error('[MMR Chart] Failed to load controller image:', CONFIG.controllerImageUrl);
+  
   // Position above the marker point
   const imgSize = 48; // Display size (smaller than 512 source)
   const left = elements.controllerMarkerX - imgSize / 2;
   const top = elements.controllerMarkerY - imgSize - 16; // 16px above the dot
+  
+  console.log('[MMR Chart] Controller image position:', { left, top, markerX: elements.controllerMarkerX, markerY: elements.controllerMarkerY });
   
   img.style.cssText = `
     position: absolute;
