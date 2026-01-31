@@ -1,7 +1,7 @@
 export const SETTINGS = {
   // Bump this when you want to force-refresh module caches site-wide.
   // You can also use a git short SHA here later if you want.
-  buildVersion: "mb8",
+  buildVersion: "mb9",
 
   // Toggle extra console logging in main.js without editing other files
   debug: false,
@@ -9,21 +9,19 @@ export const SETTINGS = {
   petitionUrl:
     "https://docs.google.com/forms/d/e/1FAIpQLSeCOeRVH54knJyBkPT8L1lPCYoany6K62Esq4ilu6_SlCAaLg/viewform?usp=publish-editor",
 
-  publicCampaignUrl: "https://magnetbear.gg/campaign.html",
+  publicCampaignUrl: "https://magnetbear.gg",
 
-  // When you actually ship it, set this to the exact timestamp.
-  // Example: "2026-02-01T14:12:00-05:00"
-  // If left null, we’ll estimate “planned ship date” = etaIso - turnaroundDays.
-  shipIso: null,
+  // Controller shipped out on this date (count-up starts here)
+  shipIso: "2026-01-31T12:00:00-05:00",
 
   // Default timer view (user preference is saved in localStorage after they toggle)
   timerDefaultMode: "countdown", // "countdown" | "countup"
 
-  // This is the “3 weeks” window
+  // This is the "3 weeks" window
   turnaroundDays: 21,
 
-  // Your current ETA (still displayed)
-  etaIso: "2026-02-28T12:00:00-05:00",
+  // ETA for controller return (3 weeks from ship date)
+  etaIso: "2026-02-21T12:00:00-05:00",
 
   signatureLimit: 250
 };
