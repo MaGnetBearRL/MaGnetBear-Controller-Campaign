@@ -223,22 +223,25 @@ function renderChart() {
   const controllerMarkerGroup = createSvgElement('g', { class: 'controller-marker-group' });
   const lineGroup = createSvgElement('g', { class: 'line-group' });
   const pointsGroup = createSvgElement('g', { class: 'points-group' });
+  const controllerDotGroup = createSvgElement('g', { class: 'controller-dot-group' }); // Foreground dot
   const axisGroup = createSvgElement('g', { class: 'axis-group' });
   
   // Render each layer
   renderRankBands(bandsGroup);
   renderGrid(gridGroup);
-  renderControllerMarker(controllerMarkerGroup);
+  renderControllerMarker(controllerMarkerGroup); // Background: line, glow, dot glow
   renderLine(lineGroup);
   renderDataPoints(pointsGroup);
+  renderControllerDotForeground(controllerDotGroup); // Foreground: solid dot on top
   renderAxes(axisGroup);
   
-  // Append groups in order
+  // Append groups in order (controller dot after points = on top)
   svg.appendChild(bandsGroup);
   svg.appendChild(gridGroup);
   svg.appendChild(controllerMarkerGroup);
   svg.appendChild(lineGroup);
   svg.appendChild(pointsGroup);
+  svg.appendChild(controllerDotGroup); // Dot renders on top of data points
   svg.appendChild(axisGroup);
   
   // Render controller image overlay (HTML, not SVG)
@@ -446,6 +449,7 @@ function renderAxes(group) {
 
 /**
  * Render the controller acquisition marker (pink vertical line + dot)
+ * Split into background (glow) and foreground (dot) elements
  */
 function renderControllerMarker(group) {
   const controllerDate = new Date(CONFIG.controllerDate);
@@ -461,13 +465,13 @@ function renderControllerMarker(group) {
   const interpolated = interpolateDataAtDate(controllerDate);
   const y = scaleY(interpolated.mmr);
   
-  // Pink vertical line from bottom to the point
+  // Pink vertical line from bottom to TOP of chart (full height)
   const verticalLine = createSvgElement('line', {
     class: 'controller-vertical-line',
     x1: x,
     y1: chartDimensions.height - CONFIG.padding.bottom,
     x2: x,
-    y2: y,
+    y2: CONFIG.padding.top, // Extend to top
     stroke: CONFIG.colors.controllerMarker,
     'stroke-width': 2,
     'stroke-dasharray': '6,4',
@@ -481,14 +485,14 @@ function renderControllerMarker(group) {
     x1: x,
     y1: chartDimensions.height - CONFIG.padding.bottom,
     x2: x,
-    y2: y,
+    y2: CONFIG.padding.top, // Extend to top
     stroke: CONFIG.colors.controllerMarker,
     'stroke-width': 6,
     opacity: 0.2
   });
   group.insertBefore(lineGlow, verticalLine);
   
-  // Pink dot at the intersection point
+  // Pink dot GLOW at the intersection point (this goes in background group)
   const dotGlow = createSvgElement('circle', {
     class: 'controller-dot-glow',
     cx: x,
@@ -499,6 +503,28 @@ function renderControllerMarker(group) {
   });
   group.appendChild(dotGlow);
   
+  // Store position for the controller image (at top of chart now)
+  elements.controllerMarkerX = x;
+  elements.controllerMarkerY = y;
+  elements.controllerMarkerTopY = CONFIG.padding.top; // For positioning image at top
+}
+
+/**
+ * Render the controller dot in the foreground (on top of data points)
+ */
+function renderControllerDotForeground(group) {
+  const controllerDate = new Date(CONFIG.controllerDate);
+  
+  // Check if date is within chart range
+  if (controllerDate < scales.x.min || controllerDate > scales.x.max) {
+    return;
+  }
+  
+  const x = scaleX(controllerDate);
+  const interpolated = interpolateDataAtDate(controllerDate);
+  const y = scaleY(interpolated.mmr);
+  
+  // Pink dot at the intersection point (foreground, on top of other points)
   const dot = createSvgElement('circle', {
     class: 'controller-dot',
     cx: x,
@@ -509,14 +535,10 @@ function renderControllerMarker(group) {
     'stroke-width': 2
   });
   group.appendChild(dot);
-  
-  // Store position for the controller image
-  elements.controllerMarkerX = x;
-  elements.controllerMarkerY = y;
 }
 
 /**
- * Render the controller image overlay (positioned above the marker)
+ * Render the controller image overlay (positioned at top of chart, above graph area)
  */
 function renderControllerImage() {
   // Remove existing controller image if any
@@ -544,12 +566,12 @@ function renderControllerImage() {
   img.onload = () => console.log('[MMR Chart] Controller image loaded successfully');
   img.onerror = () => console.error('[MMR Chart] Failed to load controller image:', CONFIG.controllerImageUrl);
   
-  // Position above the marker point
-  const imgSize = 48; // Display size (smaller than 512 source)
+  // Position at top of chart (above graph area, not over data)
+  const imgSize = 48; // Display size
   const left = elements.controllerMarkerX - imgSize / 2;
-  const top = elements.controllerMarkerY - imgSize - 16; // 16px above the dot
+  const top = -imgSize - 8; // Above the chart container entirely
   
-  console.log('[MMR Chart] Controller image position:', { left, top, markerX: elements.controllerMarkerX, markerY: elements.controllerMarkerY });
+  console.log('[MMR Chart] Controller image position:', { left, top, markerX: elements.controllerMarkerX });
   
   img.style.cssText = `
     position: absolute;
