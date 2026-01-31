@@ -1,7 +1,7 @@
 import { $ } from "../dom.js";
 
 const SIGNATURE_GOAL = 5000;
-const CHIP_STAGGER_DELAY = 40; // ms between each chip animation
+const CHIP_STAGGER_DELAY = 30; // ms between each chip animation
 const SIGNED_FLAG_KEY = "magnetbear_just_signed";
 const SIGNED_FLAG_EXPIRY = 10 * 60 * 1000; // 10 minutes
 
@@ -9,12 +9,24 @@ const SIGNED_FLAG_EXPIRY = 10 * 60 * 1000; // 10 minutes
 const SHEET_CSV_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2OBJcuF8Ou9z2a9-68cLtIEV1nDSuWFhJpvhbbVsR9Z4Ez4m3HbtiKjUmKOsqaNXJjeM9Xs_zsyPa/pub?gid=867923593&single=true&output=csv";
 
-// Column headers we care about (must match sheet exactly)
+// Column headers we care about
 const COL_APPROVAL_STATUS = "approval_status";
 const COL_PUBLIC_DISPLAY_NAME = "public_display_name";
+const COL_COMMENT = "Optional: Short message of support! (Manual review enabled. No slurs, no threats, no throwing.)";
 
 // Approval statuses that count as "approved" for display
 const APPROVED_STATUSES = new Set(["approved", "auto_approved"]);
+
+// Milestone thresholds
+const MILESTONES = [
+  { count: 50, icon: "🎉", text: "50 signatures!" },
+  { count: 100, icon: "🔥", text: "100 strong!" },
+  { count: 250, icon: "🚀", text: "250 supporters!" },
+  { count: 500, icon: "⭐", text: "500 legends!" },
+  { count: 1000, icon: "💎", text: "1K milestone!" },
+  { count: 2500, icon: "🏆", text: "2.5K reached!" },
+  { count: 5000, icon: "👑", text: "GOAL: 5,000!" },
+];
 
 /**
  * Parse CSV text into array of objects
@@ -23,11 +35,9 @@ function parseCSV(csvText) {
   const lines = csvText.split("\n");
   if (lines.length < 2) return [];
 
-  // Parse header row
   const headers = parseCSVLine(lines[0]);
-
-  // Parse data rows
   const rows = [];
+
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line) continue;
@@ -59,21 +69,17 @@ function parseCSVLine(line) {
 
     if (inQuotes) {
       if (char === '"' && nextChar === '"') {
-        // Escaped quote
         current += '"';
         i++;
       } else if (char === '"') {
-        // End of quoted field
         inQuotes = false;
       } else {
         current += char;
       }
     } else {
       if (char === '"') {
-        // Start of quoted field
         inQuotes = true;
       } else if (char === ",") {
-        // Field separator
         result.push(current.trim());
         current = "";
       } else {
@@ -82,9 +88,7 @@ function parseCSVLine(line) {
     }
   }
 
-  // Don't forget the last field
   result.push(current.trim());
-
   return result;
 }
 
@@ -100,28 +104,31 @@ async function fetchSignaturesFromSheet() {
   const csvText = await resp.text();
   const rows = parseCSV(csvText);
 
-  // Count totals and extract approved names
   let totalSignatures = rows.length;
-  const approvedNames = [];
+  const approvedEntries = [];
 
   for (const row of rows) {
     const status = (row[COL_APPROVAL_STATUS] || "").trim().toLowerCase();
     const name = (row[COL_PUBLIC_DISPLAY_NAME] || "").trim();
+    const comment = (row[COL_COMMENT] || "").trim();
 
     if (APPROVED_STATUSES.has(status) && name) {
-      approvedNames.push(name);
+      approvedEntries.push({
+        name,
+        comment: comment || null,
+      });
     }
   }
 
   return {
     total: totalSignatures,
-    approved: approvedNames.length,
-    entries: approvedNames
+    approved: approvedEntries.length,
+    entries: approvedEntries,
   };
 }
 
 /**
- * Check if user just came back from signing the petition
+ * Check if user just came back from signing
  */
 function checkJustSigned() {
   const params = new URLSearchParams(window.location.search);
@@ -142,7 +149,7 @@ function checkJustSigned() {
 }
 
 /**
- * Clear the signed flag after we've used it
+ * Clear the signed flag
  */
 function clearSignedFlag() {
   localStorage.removeItem(SIGNED_FLAG_KEY);
@@ -156,7 +163,7 @@ function clearSignedFlag() {
 }
 
 /**
- * Set the signed flag (called when user clicks Sign Petition button)
+ * Set the signed flag
  */
 export function setSignedFlag() {
   localStorage.setItem(
@@ -202,17 +209,14 @@ function updateProgressBar(total) {
   const percent = Math.min((total / SIGNATURE_GOAL) * 100, 100);
   const percentRounded = Math.round(percent * 10) / 10;
 
-  // Update the current count in the label
   if (goalCurrentEl) {
     goalCurrentEl.textContent = String(total);
   }
 
-  // Update percent text
   if (percentEl) {
     percentEl.textContent = `${percentRounded}%`;
   }
 
-  // Animate the fill bar
   if (fillEl) {
     requestAnimationFrame(() => {
       fillEl.style.width = `${percent}%`;
@@ -221,7 +225,46 @@ function updateProgressBar(total) {
 }
 
 /**
- * Scroll smoothly to the signature wall section
+ * Render milestone badges
+ */
+function renderMilestones(total) {
+  const container = $("sig_milestones");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  // Find the next milestone
+  let nextMilestoneIndex = MILESTONES.findIndex((m) => m.count > total);
+  if (nextMilestoneIndex === -1) nextMilestoneIndex = MILESTONES.length;
+
+  MILESTONES.forEach((milestone, index) => {
+    const badge = document.createElement("div");
+    badge.className = "sigMilestone";
+
+    if (total >= milestone.count) {
+      badge.classList.add("achieved");
+    } else if (index === nextMilestoneIndex) {
+      badge.classList.add("next");
+    } else {
+      badge.classList.add("pending");
+    }
+
+    const icon = document.createElement("span");
+    icon.className = "sigMilestoneIcon";
+    icon.textContent = milestone.icon;
+
+    const text = document.createElement("span");
+    text.className = "sigMilestoneText";
+    text.textContent = milestone.text;
+
+    badge.appendChild(icon);
+    badge.appendChild(text);
+    container.appendChild(badge);
+  });
+}
+
+/**
+ * Scroll smoothly to the signature wall
  */
 function scrollToSignatureWall() {
   const section = $("signatureWall");
@@ -243,7 +286,6 @@ export async function initSignatureWall(settings) {
 
   const justSigned = checkJustSigned();
 
-  // If user just signed, scroll to wall and clear the flag
   if (justSigned) {
     setTimeout(() => {
       scrollToSignatureWall();
@@ -251,7 +293,7 @@ export async function initSignatureWall(settings) {
     }, 300);
   }
 
-  // Hook up the Sign Petition button to set the flag when clicked
+  // Hook up the Sign Petition button
   const signBtn = $("signBtn");
   if (signBtn) {
     signBtn.addEventListener("click", () => {
@@ -261,13 +303,15 @@ export async function initSignatureWall(settings) {
 
   try {
     console.log("[SignatureWall] Fetching live data from Google Sheets...");
-    
+
     const data = await fetchSignaturesFromSheet();
     const { total, approved, entries } = data;
 
-    console.log(`[SignatureWall] Total: ${total}, Approved: ${approved}, Entries: ${entries.length}`);
+    console.log(
+      `[SignatureWall] Total: ${total}, Approved: ${approved}, Entries: ${entries.length}`
+    );
 
-    // If just signed, animate the counter from previous value
+    // Animate counters if just signed
     if (justSigned) {
       const prevTotal = Math.max(0, total - 1);
       const prevApproved = Math.max(0, approved - 1);
@@ -287,6 +331,9 @@ export async function initSignatureWall(settings) {
     // Update progress bar
     updateProgressBar(total);
 
+    // Render milestones
+    renderMilestones(total);
+
     // Clear existing chips
     listEl.innerHTML = "";
 
@@ -301,27 +348,31 @@ export async function initSignatureWall(settings) {
     const limit = settings.signatureLimit || 250;
     const displayEntries = entries.slice(0, limit);
 
-    displayEntries.forEach((name, index) => {
+    displayEntries.forEach((entry, index) => {
       const chip = document.createElement("div");
       chip.className = "sigChip";
-      chip.textContent = name;
+      chip.textContent = entry.name;
+
+      // Add comment as data attribute for tooltip
+      if (entry.comment) {
+        chip.setAttribute("data-comment", `"${entry.comment}"`);
+      }
 
       // Stagger the animation delay
       const delay = index * CHIP_STAGGER_DELAY;
       chip.style.animationDelay = `${delay}ms`;
 
-      // If this is the "newest" chip and user just signed, highlight it
+      // Highlight newest chip if just signed
       if (justSigned && index === 0) {
         chip.classList.add("sigNew");
       }
 
       listEl.appendChild(chip);
     });
-
   } catch (err) {
     console.error("[SignatureWall] Failed to load signatures:", err);
-    
-    // Fallback: try loading from local JSON file
+
+    // Fallback to local JSON
     try {
       console.log("[SignatureWall] Trying fallback to signatures.json...");
       const resp = await fetch("./signatures.json", { cache: "no-store" });
@@ -330,9 +381,10 @@ export async function initSignatureWall(settings) {
         totalEl.textContent = String(fallbackData.total_signatures ?? 0);
         approvedEl.textContent = String(fallbackData.approved_signatures ?? 0);
         updateProgressBar(fallbackData.total_signatures ?? 0);
+        renderMilestones(fallbackData.total_signatures ?? 0);
       }
     } catch {
-      // Silent fail on fallback
+      // Silent fail
     }
   }
 }

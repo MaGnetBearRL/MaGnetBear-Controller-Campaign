@@ -27,12 +27,40 @@
   margin-bottom: 14px;
 }
 
-/* Signature chip list */
+/* Signature chip list - scrollable container */
 .sigList {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   align-content: flex-start;
+  
+  /* Scrollable with max height (~50 chips visible) */
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 8px;
+  padding-bottom: 80px; /* Space for tooltips below */
+  
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(83, 213, 254, 0.3) rgba(0, 0, 0, 0.2);
+}
+
+.sigList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sigList::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.sigList::-webkit-scrollbar-thumb {
+  background: rgba(83, 213, 254, 0.3);
+  border-radius: 4px;
+}
+
+.sigList::-webkit-scrollbar-thumb:hover {
+  background: rgba(83, 213, 254, 0.5);
 }
 
 /* Individual signature chip */
@@ -251,6 +279,170 @@
     transform: scale(1);
     color: var(--text);
   }
+}
+
+/* ============================================
+   COMMENT TOOLTIPS
+   ============================================ */
+
+.sigChip {
+  position: relative;
+  cursor: default;
+}
+
+.sigChip[data-comment] {
+  cursor: pointer;
+}
+
+/* Tooltip container */
+.sigChip[data-comment]::before,
+.sigChip[data-comment]::after {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Tooltip bubble - positioned BELOW chip to avoid scroll clipping */
+.sigChip[data-comment]::before {
+  content: attr(data-comment);
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  
+  max-width: 280px;
+  min-width: 140px;
+  padding: 10px 14px;
+  
+  background: linear-gradient(180deg, rgba(20, 25, 50, 0.98), rgba(10, 14, 30, 0.98));
+  border: 1px solid rgba(83, 213, 254, 0.35);
+  border-radius: 12px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(83, 213, 254, 0.15);
+  
+  font-size: 13px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text);
+  text-align: center;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+/* Tooltip arrow - points UP */
+.sigChip[data-comment]::after {
+  content: "";
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  
+  border: 6px solid transparent;
+  border-bottom-color: rgba(83, 213, 254, 0.35);
+}
+
+/* Show on hover */
+.sigChip[data-comment]:hover::before,
+.sigChip[data-comment]:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Quote marks styling */
+.sigChip[data-comment]::before {
+  quotes: """ """;
+}
+
+/* ============================================
+   CHIPS WITH COMMENTS - MagnetBear Blue highlight
+   ============================================ */
+
+/* Chips with approved comments get the signature blue color */
+.sigChip[data-comment] {
+  background:
+    linear-gradient(135deg, rgba(83, 213, 254, 0.22), rgba(83, 213, 254, 0.12));
+  border-color: rgba(83, 213, 254, 0.45);
+  box-shadow:
+    0 0 8px rgba(83, 213, 254, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.sigChip[data-comment]:hover {
+  background:
+    linear-gradient(135deg, rgba(83, 213, 254, 0.32), rgba(83, 213, 254, 0.18));
+  border-color: rgba(83, 213, 254, 0.6);
+  box-shadow:
+    0 0 16px rgba(83, 213, 254, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   MILESTONE CELEBRATIONS
+   ============================================ */
+
+.sigMilestones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.sigMilestone {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(83, 213, 254, 0.15), rgba(0, 0, 255, 0.08));
+  border: 1px solid rgba(83, 213, 254, 0.25);
+  
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sigMilestone.achieved {
+  background: linear-gradient(135deg, rgba(83, 213, 254, 0.25), rgba(0, 100, 255, 0.15));
+  border-color: rgba(83, 213, 254, 0.45);
+  box-shadow: 0 0 12px rgba(83, 213, 254, 0.2);
+}
+
+.sigMilestone.achieved .sigMilestoneIcon {
+  animation: milestonePulse 2s ease-in-out infinite;
+}
+
+@keyframes milestonePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.sigMilestone.pending {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.sigMilestoneIcon {
+  font-size: 14px;
+}
+
+.sigMilestoneText {
+  letter-spacing: 0.02em;
+}
+
+/* Next milestone highlight */
+.sigMilestone.next {
+  opacity: 0.8;
+  border-color: rgba(83, 213, 254, 0.35);
+  animation: nextMilestoneGlow 3s ease-in-out infinite;
+}
+
+@keyframes nextMilestoneGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(83, 213, 254, 0.1); }
+  50% { box-shadow: 0 0 16px rgba(83, 213, 254, 0.25); }
 }
 
 /* ============================================

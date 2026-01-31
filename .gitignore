@@ -1,15 +1,24 @@
-# Local dev tools - only include scripts, not cookies/caches
+# Build artifacts and caches
+__pycache__/
+*.pyc
+node_modules/
+
+# Local tool data (cookies, temp files)
 /tools/*
 !/tools/update_mmr.py
 !/tools/convert_trn_data.py
 !/tools/update_signatures.py
 !/tools/feedgen.py
 
-# Cursor context (local only)
-CURSOR_CONTEXT.md
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Local docs (not for public repo)
-/docs/
+# OS files
+.DS_Store
+Thumbs.db
 
-# Temp data files
+# Temp data
 /data/trn-raw.json
