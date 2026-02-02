@@ -19,7 +19,7 @@ import subprocess
 import sys
 import time
 import http.cookiejar
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 try:
@@ -74,6 +74,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 COOKIES_FILE = SCRIPT_DIR / "cookies.txt"
 RAW_FILE = PROJECT_ROOT / "data" / "trn-raw.json"
 OUTPUT_FILE = PROJECT_ROOT / "data" / "mmr-data.json"
+ARCHIVE_FILE = PROJECT_ROOT / "data" / "mmr-archive.json"  # Permanent historical record
 
 # URLs
 TRACKER_URL = "https://rocketleague.tracker.network/rocket-league/profile/epic/MaGnetBear/mmr?playlist=28"
@@ -110,8 +111,164 @@ def get_rank(mmr):
     return "Unranked", 0
 
 
-def convert_data(api_data):
-    # API returns data as dict with playlist IDs as keys
+def load_archive():
+    """Load existing archive data, or return empty structure if none exists."""
+    if ARCHIVE_FILE.exists():
+        try:
+            with open(ARCHIVE_FILE, "r", encoding="utf-8") as f:
+                archive = json.load(f)
+                print(f"  Loaded archive with {len(archive.get('dataPoints', []))} points")
+                return archive
+        except Exception as e:
+            print(f"  Warning: Could not load archive: {e}")
+    return {"dataPoints": [], "lastUpdated": None}
+
+
+def save_archive(archive):
+    """Save archive to disk."""
+    archive["lastUpdated"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    with open(ARCHIVE_FILE, "w", encoding="utf-8") as f:
+        json.dump(archive, f, indent=2)
+    print(f"  Archive saved with {len(archive['dataPoints'])} points")
+
+
+def merge_with_archive(archive, new_points):
+    """
+    Merge new data points with existing archive.
+    - Keeps all historical data from archive
+    - Adds new data points
+    - Dedupes by date (latest value wins for same date)
+    - Returns merged list sorted by date
+    """
+    # Create dict keyed by date for easy merging
+    merged = {}
+    
+    # Add archive points first
+    for point in archive.get("dataPoints", []):
+        date_key = point["date"][:10]  # YYYY-MM-DD
+        merged[date_key] = point
+    
+    archive_count = len(merged)
+    
+    # Add/update with new points (newer data overwrites)
+    for point in new_points:
+        date_key = point["date"][:10]
+        merged[date_key] = point
+    
+    new_count = len(merged) - archive_count
+    if new_count > 0:
+        print(f"  Added {new_count} new data points to archive")
+    
+    # Convert back to sorted list
+    result = list(merged.values())
+    result.sort(key=lambda x: x["date"])
+    return result
+
+
+def dedupe_to_daily(points):
+    """
+    Consolidate multiple data points per day to ONE per day.
+    Takes the last (most recent) value for each day.
+    """
+    if not points:
+        return points
+    
+    daily = {}
+    for point in points:
+        # Parse date and get just the date portion (YYYY-MM-DD)
+        date_str = point["date"][:10]
+        # Keep the latest value for each day (overwrites earlier ones)
+        daily[date_str] = point
+    
+    # Convert back to list, sorted by date
+    result = list(daily.values())
+    result.sort(key=lambda x: x["date"])
+    return result
+
+
+def fill_daily_gaps(points):
+    """
+    Fill gaps between data points to show time passing.
+    Only adds ONE point at the end of a gap (the day before next real data).
+    This creates clean flat lines without cluttering with daily dots.
+    """
+    if len(points) < 2:
+        return points
+    
+    filled = []
+    for i, point in enumerate(points):
+        filled.append(point)
+        
+        if i < len(points) - 1:
+            # Get date portion only
+            current_date_str = point["date"][:10]
+            next_date_str = points[i + 1]["date"][:10]
+            
+            current_date = datetime.strptime(current_date_str, "%Y-%m-%d")
+            next_date = datetime.strptime(next_date_str, "%Y-%m-%d")
+            
+            # If there's a gap of 2+ days, add ONE point at the end of gap
+            # (the day before next data point, at current MMR)
+            gap_days = (next_date - current_date).days
+            if gap_days > 1:
+                end_of_gap = next_date - timedelta(days=1)
+                gap_point = {
+                    "date": end_of_gap.strftime("%Y-%m-%dT00:00:00+00:00"),
+                    "mmr": point["mmr"],
+                    "rank": point["rank"],
+                    "division": point["division"]
+                }
+                filled.append(gap_point)
+    
+    return filled
+
+
+def consolidate_flat_periods(points):
+    """
+    Remove intermediate points in flat (same MMR) periods.
+    Keeps only the START and END of consecutive same-MMR runs.
+    This reduces visual clutter from lots of dots on flat lines.
+    """
+    if len(points) < 3:
+        return points
+    
+    consolidated = [points[0]]  # Always keep first point
+    
+    i = 1
+    while i < len(points):
+        current = points[i]
+        prev = consolidated[-1]
+        
+        # Check if this is part of a flat run (same MMR as previous)
+        if current["mmr"] == prev["mmr"]:
+            # Look ahead to find end of flat run
+            j = i
+            while j < len(points) and points[j]["mmr"] == prev["mmr"]:
+                j += 1
+            
+            # j is now pointing to first different MMR (or end of list)
+            # Keep only the last point of the flat run (j-1)
+            if j - 1 > i:
+                # There were multiple same-MMR points, skip to the last one
+                consolidated.append(points[j - 1])
+                i = j
+            else:
+                # Only one point at this MMR, keep it
+                consolidated.append(current)
+                i += 1
+        else:
+            consolidated.append(current)
+            i += 1
+    
+    return consolidated
+
+
+def extract_raw_points(api_data):
+    """
+    Extract raw data points from API response.
+    These are the actual recorded data points (no gap filling).
+    Used for archiving.
+    """
     data = api_data.get("data", {})
     
     # Get Rumble playlist (ID 28)
@@ -137,12 +294,27 @@ def convert_data(api_data):
             points.append({"date": date, "mmr": rating, "rank": r, "division": d})
     points.sort(key=lambda x: x["date"])
     
+    return points
+
+
+def build_display_data(points):
+    """
+    Build the display-ready data structure from data points.
+    Applies deduplication, gap filling, and flat period consolidation.
+    """
     if not points:
         raise ValueError("No data points")
     
-    latest = points[-1]
+    # Dedupe to one point per day
+    display_points = dedupe_to_daily(points)
+    # Fill gaps (adds end-of-gap points for flat lines)
+    display_points = fill_daily_gaps(display_points)
+    # Consolidate flat periods (remove intermediate same-MMR dots)
+    display_points = consolidate_flat_periods(display_points)
+    
+    latest = display_points[-1]
     r, d = get_rank(latest["mmr"])
-    mmr_vals = [p["mmr"] for p in points]
+    mmr_vals = [p["mmr"] for p in display_points]
     
     bands = []
     for i, (t, rank) in enumerate(RANK_THRESHOLDS):
@@ -155,10 +327,10 @@ def convert_data(api_data):
     
     return {
         "profile": {"platform": "epic", "platformUsername": "MaGnetBear", "playlist": "Rumble", "playlistId": PLAYLIST_ID},
-        "currentRating": {"mmr": latest["mmr"], "rank": r, "division": f"Division {d}", "matches": len(points)},
+        "currentRating": {"mmr": latest["mmr"], "rank": r, "division": f"Division {d}", "matches": len(display_points)},
         "rankThresholds": {"gc1": 1435, "gc2": 1535, "gc3": 1635, "ssl": 1862},
         "rankBands": bands,
-        "dataPoints": points,
+        "dataPoints": display_points,
         "lastUpdated": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     }
 
@@ -289,33 +461,52 @@ def main():
             print(f"  Error reading file: {e}")
             return
     
-    print("  Converting...")
+    print("  Processing...")
     
-    # Convert
     try:
-        output = convert_data(data)
+        # Extract raw points from API response
+        new_points = extract_raw_points(data)
+        print(f"  Got {len(new_points)} points from TRN")
+        
+        # Load existing archive
+        archive = load_archive()
+        
+        # Merge new points with archive
+        merged_points = merge_with_archive(archive, new_points)
+        
+        # Save updated archive (raw points, no gap filling)
+        archive["dataPoints"] = merged_points
+        save_archive(archive)
+        
+        # Build display data (with gap filling) from merged archive
+        output = build_display_data(merged_points)
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             json.dump(output, f, indent=2)
         
         gc_diff = output["currentRating"]["mmr"] - GC1_THRESHOLD
         print(f"\n  {output['currentRating']['rank']} {output['currentRating']['division']}")
         print(f"  MMR: {output['currentRating']['mmr']} ({gc_diff:+d} from GC1)")
+        print(f"  Archive: {len(merged_points)} raw points")
+        print(f"  Display: {len(output['dataPoints'])} points (with gap fill)")
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(f"\n  Error: {e}")
         return
     
-    # Git commit
-    print("\n  Committing...")
+    # Git - show diff but don't auto-commit
+    print("\n  Checking for changes...")
     os.chdir(PROJECT_ROOT)
     
-    diff = subprocess.run(["git", "diff", "--quiet", "data/mmr-data.json"], capture_output=True)
+    diff = subprocess.run(["git", "diff", "--quiet", "data/"], capture_output=True)
     if diff.returncode == 0:
-        print("  No changes.")
+        print("  No changes to commit.")
     else:
-        subprocess.run(["git", "add", "data/mmr-data.json"], check=True)
-        subprocess.run(["git", "commit", "-m", f"Update MMR [{datetime.now():%Y-%m-%d %H:%M}]"], check=True)
-        subprocess.run(["git", "push"], check=True)
-        print("  Pushed!")
+        print("  Changes detected in data/")
+        print("  Run these commands to commit:")
+        print(f'    git add data/mmr-data.json data/mmr-archive.json')
+        print(f'    git commit -m "Update MMR [{datetime.now():%Y-%m-%d %H:%M}]"')
+        print(f'    git push')
     
     print("\n  Done!")
     print("=" * 55)

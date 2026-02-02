@@ -38,6 +38,15 @@ let chartData = null;
 let chartDimensions = null;
 let scales = null;
 
+// Zoom/Pan state
+let viewRange = null;  // { start: Date, end: Date } - current visible range
+let fullRange = null;  // { start: Date, end: Date } - full data range
+let isPanning = false;
+let panStartX = 0;
+let panStartRange = null;
+const MIN_ZOOM_DAYS = 14;  // Minimum zoom level (2 weeks)
+const ZOOM_FACTOR = 0.15;  // How much to zoom per wheel tick
+
 // DOM Elements
 const elements = {
   chartContainer: null,
@@ -161,9 +170,34 @@ function setupChart() {
     innerHeight: rect.height - CONFIG.padding.top - CONFIG.padding.bottom
   };
   
-  // Parse dates and find extent
+  // Parse dates and find full extent
   const dates = chartData.dataPoints.map(d => new Date(d.date));
-  const mmrValues = chartData.dataPoints.map(d => d.mmr);
+  
+  // Initialize full range (never changes)
+  if (!fullRange) {
+    fullRange = {
+      start: dates[0],
+      end: dates[dates.length - 1]
+    };
+  }
+  
+  // Initialize view range to full range if not set
+  if (!viewRange) {
+    viewRange = {
+      start: new Date(fullRange.start),
+      end: new Date(fullRange.end)
+    };
+  }
+  
+  // Get MMR values within current view range
+  const visiblePoints = chartData.dataPoints.filter(d => {
+    const date = new Date(d.date);
+    return date >= viewRange.start && date <= viewRange.end;
+  });
+  
+  const mmrValues = visiblePoints.length > 0 
+    ? visiblePoints.map(d => d.mmr)
+    : chartData.dataPoints.map(d => d.mmr);
   
   // Add padding to MMR range
   const mmrMin = Math.min(...mmrValues) - 50;
@@ -171,8 +205,8 @@ function setupChart() {
   
   scales = {
     x: {
-      min: dates[0],
-      max: dates[dates.length - 1],
+      min: viewRange.start,
+      max: viewRange.end,
       range: [CONFIG.padding.left, chartDimensions.width - CONFIG.padding.right]
     },
     y: {
@@ -184,6 +218,9 @@ function setupChart() {
   
   // Set SVG viewBox
   elements.chartSvg.setAttribute('viewBox', `0 0 ${chartDimensions.width} ${chartDimensions.height}`);
+  
+  // Update zoom indicator
+  updateZoomIndicator();
 }
 
 /**
@@ -367,27 +404,16 @@ function renderLine(group) {
 }
 
 /**
- * Create a smooth path through points using cubic bezier curves
+ * Create a linear path through points (straight line segments)
+ * No bezier curves - prevents "curving back" on the time axis
  */
 function createSmoothPath(points) {
   if (points.length < 2) return '';
   
   let d = `M ${points[0].x} ${points[0].y}`;
   
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[Math.max(0, i - 1)];
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[Math.min(points.length - 1, i + 2)];
-    
-    // Control points for cubic bezier
-    const tension = 0.3;
-    const cp1x = p1.x + (p2.x - p0.x) * tension;
-    const cp1y = p1.y + (p2.y - p0.y) * tension;
-    const cp2x = p2.x - (p3.x - p1.x) * tension;
-    const cp2y = p2.y - (p3.y - p1.y) * tension;
-    
-    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+  for (let i = 1; i < points.length; i++) {
+    d += ` L ${points[i].x} ${points[i].y}`;
   }
   
   return d;
@@ -647,11 +673,191 @@ function attachEventListeners() {
   elements.chartContainer.addEventListener('mouseleave', handleMouseLeave);
   elements.chartContainer.addEventListener('click', handleClick);
   
+  // Zoom with mouse wheel
+  elements.chartContainer.addEventListener('wheel', handleWheel, { passive: false });
+  
+  // Pan with mouse drag
+  elements.chartContainer.addEventListener('mousedown', handlePanStart);
+  document.addEventListener('mousemove', handlePanMove);
+  document.addEventListener('mouseup', handlePanEnd);
+  
   // Handle window resize
   window.addEventListener('resize', debounce(() => {
     setupChart();
     renderChart();
   }, 250));
+}
+
+/**
+ * Handle mouse wheel for zooming
+ */
+function handleWheel(e) {
+  e.preventDefault();
+  
+  const rect = elements.chartContainer.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  
+  // Only zoom if mouse is in chart area
+  if (mouseX < CONFIG.padding.left || mouseX > chartDimensions.width - CONFIG.padding.right) {
+    return;
+  }
+  
+  // Get the date at mouse position (zoom center)
+  const mouseDate = inverseScaleX(mouseX);
+  
+  // Calculate current range in milliseconds
+  const currentRange = viewRange.end - viewRange.start;
+  const minRange = MIN_ZOOM_DAYS * 24 * 60 * 60 * 1000;
+  const maxRange = fullRange.end - fullRange.start;
+  
+  // Determine zoom direction
+  const zoomIn = e.deltaY < 0;
+  const factor = zoomIn ? (1 - ZOOM_FACTOR) : (1 + ZOOM_FACTOR);
+  
+  // Calculate new range
+  let newRange = currentRange * factor;
+  newRange = Math.max(minRange, Math.min(maxRange, newRange));
+  
+  // Calculate position ratio (where mouse is in current view)
+  const ratio = (mouseDate - viewRange.start) / currentRange;
+  
+  // Apply zoom centered on mouse position
+  const newStart = new Date(mouseDate.getTime() - newRange * ratio);
+  const newEnd = new Date(mouseDate.getTime() + newRange * (1 - ratio));
+  
+  // Clamp to full range
+  if (newStart < fullRange.start) {
+    viewRange.start = new Date(fullRange.start);
+    viewRange.end = new Date(fullRange.start.getTime() + newRange);
+  } else if (newEnd > fullRange.end) {
+    viewRange.end = new Date(fullRange.end);
+    viewRange.start = new Date(fullRange.end.getTime() - newRange);
+  } else {
+    viewRange.start = newStart;
+    viewRange.end = newEnd;
+  }
+  
+  // Clamp again to ensure within bounds
+  if (viewRange.start < fullRange.start) viewRange.start = new Date(fullRange.start);
+  if (viewRange.end > fullRange.end) viewRange.end = new Date(fullRange.end);
+  
+  // Re-render
+  setupChart();
+  renderChart();
+}
+
+/**
+ * Handle pan start
+ */
+function handlePanStart(e) {
+  // Only start pan on left click
+  if (e.button !== 0) return;
+  
+  const rect = elements.chartContainer.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  
+  // Only pan if in chart area
+  if (mouseX < CONFIG.padding.left || mouseX > chartDimensions.width - CONFIG.padding.right) {
+    return;
+  }
+  
+  // Check if zoomed in (panning only makes sense when zoomed)
+  const currentRange = viewRange.end - viewRange.start;
+  const maxRange = fullRange.end - fullRange.start;
+  if (currentRange >= maxRange * 0.99) return; // Not zoomed, don't pan
+  
+  isPanning = true;
+  panStartX = e.clientX;
+  panStartRange = {
+    start: new Date(viewRange.start),
+    end: new Date(viewRange.end)
+  };
+  
+  elements.chartContainer.style.cursor = 'grabbing';
+  e.preventDefault();
+}
+
+/**
+ * Handle pan move
+ */
+function handlePanMove(e) {
+  if (!isPanning) return;
+  
+  const deltaX = e.clientX - panStartX;
+  const pixelsPerMs = chartDimensions.innerWidth / (panStartRange.end - panStartRange.start);
+  const deltaMs = -deltaX / pixelsPerMs;
+  
+  let newStart = new Date(panStartRange.start.getTime() + deltaMs);
+  let newEnd = new Date(panStartRange.end.getTime() + deltaMs);
+  
+  // Clamp to full range
+  if (newStart < fullRange.start) {
+    const shift = fullRange.start - newStart;
+    newStart = new Date(fullRange.start);
+    newEnd = new Date(newEnd.getTime() + shift);
+  }
+  if (newEnd > fullRange.end) {
+    const shift = newEnd - fullRange.end;
+    newEnd = new Date(fullRange.end);
+    newStart = new Date(newStart.getTime() - shift);
+  }
+  
+  viewRange.start = newStart;
+  viewRange.end = newEnd;
+  
+  setupChart();
+  renderChart();
+}
+
+/**
+ * Handle pan end
+ */
+function handlePanEnd() {
+  if (isPanning) {
+    isPanning = false;
+    elements.chartContainer.style.cursor = '';
+  }
+}
+
+/**
+ * Reset zoom to full view
+ */
+function resetZoom() {
+  if (!fullRange) return;
+  
+  viewRange = {
+    start: new Date(fullRange.start),
+    end: new Date(fullRange.end)
+  };
+  
+  setupChart();
+  renderChart();
+}
+
+/**
+ * Update zoom indicator / reset button visibility
+ */
+function updateZoomIndicator() {
+  let indicator = document.getElementById('zoomResetBtn');
+  
+  // Check if zoomed
+  const currentRange = viewRange.end - viewRange.start;
+  const maxRange = fullRange.end - fullRange.start;
+  const isZoomed = currentRange < maxRange * 0.99;
+  
+  if (isZoomed) {
+    if (!indicator) {
+      indicator = document.createElement('button');
+      indicator.id = 'zoomResetBtn';
+      indicator.className = 'zoom-reset-btn';
+      indicator.innerHTML = '↩ Reset Zoom';
+      indicator.onclick = resetZoom;
+      elements.chartContainer.parentElement.appendChild(indicator);
+    }
+    indicator.style.display = 'block';
+  } else if (indicator) {
+    indicator.style.display = 'none';
+  }
 }
 
 /**

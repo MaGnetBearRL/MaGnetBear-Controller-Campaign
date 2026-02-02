@@ -555,3 +555,43 @@
     margin-left: 0;
   }
 }
+
+/* ============================================
+   ZOOM CONTROLS
+   ============================================ */
+
+.zoom-reset-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 105, 180, 0.15);
+  border: 1px solid rgba(255, 105, 180, 0.4);
+  color: #ff69b4;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 20;
+  display: none;
+}
+
+.zoom-reset-btn:hover {
+  background: rgba(255, 105, 180, 0.25);
+  border-color: #ff69b4;
+  box-shadow: 0 0 12px rgba(255, 105, 180, 0.3);
+}
+
+/* Chart container cursor when zoomed */
+.mmr-chart-container {
+  cursor: default;
+}
+
+.mmr-chart-container.zoomed {
+  cursor: grab;
+}
+
+.mmr-chart-container.zoomed:active {
+  cursor: grabbing;
+}
