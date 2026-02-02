@@ -9,7 +9,7 @@
     "mmr": 1074,
     "rank": "Champion I",
     "division": "Division 3",
-    "matches": 155
+    "matches": 154
   },
   "rankThresholds": {
     "gc1": 1435,
@@ -56,12 +56,6 @@
     }
   ],
   "dataPoints": [
-    {
-      "date": "2025-02-02T00:00:00+00:00",
-      "mmr": 909,
-      "rank": "Diamond II",
-      "division": 3
-    },
     {
       "date": "2025-02-03T00:00:00+00:00",
       "mmr": 881,
@@ -987,5 +981,5 @@
       "division": 3
     }
   ],
-  "lastUpdated": "2026-02-01T23:51:05.077456Z"
+  "lastUpdated": "2026-02-02T05:17:53.215569Z"
 }
