@@ -6,10 +6,10 @@
     "playlistId": 28
   },
   "currentRating": {
-    "mmr": 1074,
+    "mmr": 1068,
     "rank": "Champion I",
     "division": "Division 3",
-    "matches": 191
+    "matches": 155
   },
   "rankThresholds": {
     "gc1": 1435,
@@ -57,12 +57,6 @@
   ],
   "dataPoints": [
     {
-      "date": "2025-02-03T00:00:00+00:00",
-      "mmr": 881,
-      "rank": "Diamond II",
-      "division": 2
-    },
-    {
       "date": "2025-02-04T00:00:00+00:00",
       "mmr": 846,
       "rank": "Diamond I",
@@ -99,31 +93,13 @@
       "division": 2
     },
     {
-      "date": "2025-02-11T00:00:00+00:00",
-      "mmr": 812,
-      "rank": "Diamond I",
-      "division": 2
-    },
-    {
       "date": "2025-02-12T00:00:00+00:00",
       "mmr": 912,
       "rank": "Diamond II",
       "division": 3
     },
     {
-      "date": "2025-02-13T00:00:00+00:00",
-      "mmr": 912,
-      "rank": "Diamond II",
-      "division": 3
-    },
-    {
       "date": "2025-02-14T00:00:00+00:00",
-      "mmr": 820,
-      "rank": "Diamond I",
-      "division": 3
-    },
-    {
-      "date": "2025-02-20T00:00:00+00:00",
       "mmr": 820,
       "rank": "Diamond I",
       "division": 3
@@ -141,12 +117,6 @@
       "division": 2
     },
     {
-      "date": "2025-02-23T00:00:00+00:00",
-      "mmr": 815,
-      "rank": "Diamond I",
-      "division": 2
-    },
-    {
       "date": "2025-02-24T00:00:00+00:00",
       "mmr": 797,
       "rank": "Diamond I",
@@ -159,19 +129,7 @@
       "division": 4
     },
     {
-      "date": "2025-02-27T00:00:00+00:00",
-      "mmr": 761,
-      "rank": "Platinum III",
-      "division": 4
-    },
-    {
       "date": "2025-02-28T00:00:00+00:00",
-      "mmr": 765,
-      "rank": "Platinum III",
-      "division": 4
-    },
-    {
-      "date": "2025-03-01T00:00:00+00:00",
       "mmr": 765,
       "rank": "Platinum III",
       "division": 4
@@ -213,12 +171,6 @@
       "division": 3
     },
     {
-      "date": "2025-03-09T00:00:00+00:00",
-      "mmr": 906,
-      "rank": "Diamond II",
-      "division": 3
-    },
-    {
       "date": "2025-03-10T00:00:00+00:00",
       "mmr": 935,
       "rank": "Diamond II",
@@ -231,19 +183,7 @@
       "division": 1
     },
     {
-      "date": "2025-03-14T00:00:00+00:00",
-      "mmr": 1018,
-      "rank": "Champion I",
-      "division": 1
-    },
-    {
       "date": "2025-03-15T00:00:00+00:00",
-      "mmr": 956,
-      "rank": "Diamond III",
-      "division": 2
-    },
-    {
-      "date": "2025-03-17T00:00:00+00:00",
       "mmr": 956,
       "rank": "Diamond III",
       "division": 2
@@ -256,12 +196,6 @@
     },
     {
       "date": "2025-03-19T00:00:00+00:00",
-      "mmr": 904,
-      "rank": "Diamond II",
-      "division": 3
-    },
-    {
-      "date": "2025-03-20T00:00:00+00:00",
       "mmr": 904,
       "rank": "Diamond II",
       "division": 3
@@ -297,31 +231,13 @@
       "division": 2
     },
     {
-      "date": "2025-03-26T00:00:00+00:00",
-      "mmr": 878,
-      "rank": "Diamond II",
-      "division": 2
-    },
-    {
       "date": "2025-03-27T00:00:00+00:00",
       "mmr": 879,
       "rank": "Diamond II",
       "division": 2
     },
     {
-      "date": "2025-03-29T00:00:00+00:00",
-      "mmr": 879,
-      "rank": "Diamond II",
-      "division": 2
-    },
-    {
       "date": "2025-03-30T00:00:00+00:00",
-      "mmr": 883,
-      "rank": "Diamond II",
-      "division": 2
-    },
-    {
-      "date": "2025-03-31T00:00:00+00:00",
       "mmr": 883,
       "rank": "Diamond II",
       "division": 2
@@ -351,7 +267,13 @@
       "division": 1
     },
     {
-      "date": "2025-04-13T00:00:00+00:00",
+      "date": "2025-04-05T00:00:00+00:00",
+      "mmr": 867,
+      "rank": "Diamond II",
+      "division": 1
+    },
+    {
+      "date": "2025-04-07T00:00:00+00:00",
       "mmr": 867,
       "rank": "Diamond II",
       "division": 1
@@ -369,19 +291,7 @@
       "division": 1
     },
     {
-      "date": "2025-04-20T00:00:00+00:00",
-      "mmr": 939,
-      "rank": "Diamond III",
-      "division": 1
-    },
-    {
       "date": "2025-04-21T00:00:00+00:00",
-      "mmr": 960,
-      "rank": "Diamond III",
-      "division": 2
-    },
-    {
-      "date": "2025-04-22T00:00:00+00:00",
       "mmr": 960,
       "rank": "Diamond III",
       "division": 2
@@ -393,31 +303,13 @@
       "division": 1
     },
     {
-      "date": "2025-04-24T00:00:00+00:00",
-      "mmr": 944,
-      "rank": "Diamond III",
-      "division": 1
-    },
-    {
       "date": "2025-04-25T00:00:00+00:00",
       "mmr": 881,
       "rank": "Diamond II",
       "division": 2
     },
     {
-      "date": "2025-04-30T00:00:00+00:00",
-      "mmr": 881,
-      "rank": "Diamond II",
-      "division": 2
-    },
-    {
       "date": "2025-05-01T00:00:00+00:00",
-      "mmr": 956,
-      "rank": "Diamond III",
-      "division": 2
-    },
-    {
-      "date": "2025-05-02T00:00:00+00:00",
       "mmr": 956,
       "rank": "Diamond III",
       "division": 2
@@ -447,12 +339,6 @@
       "division": 1
     },
     {
-      "date": "2025-05-08T00:00:00+00:00",
-      "mmr": 941,
-      "rank": "Diamond III",
-      "division": 1
-    },
-    {
       "date": "2025-05-09T00:00:00+00:00",
       "mmr": 888,
       "rank": "Diamond II",
@@ -460,12 +346,6 @@
     },
     {
       "date": "2025-05-10T00:00:00+00:00",
-      "mmr": 906,
-      "rank": "Diamond II",
-      "division": 3
-    },
-    {
-      "date": "2025-05-11T00:00:00+00:00",
       "mmr": 906,
       "rank": "Diamond II",
       "division": 3
@@ -483,19 +363,7 @@
       "division": 1
     },
     {
-      "date": "2025-05-17T00:00:00+00:00",
-      "mmr": 945,
-      "rank": "Diamond III",
-      "division": 1
-    },
-    {
       "date": "2025-05-18T00:00:00+00:00",
-      "mmr": 943,
-      "rank": "Diamond III",
-      "division": 1
-    },
-    {
-      "date": "2025-05-19T00:00:00+00:00",
       "mmr": 943,
       "rank": "Diamond III",
       "division": 1
@@ -525,19 +393,7 @@
       "division": 4
     },
     {
-      "date": "2025-05-24T00:00:00+00:00",
-      "mmr": 851,
-      "rank": "Diamond I",
-      "division": 4
-    },
-    {
       "date": "2025-05-25T00:00:00+00:00",
-      "mmr": 891,
-      "rank": "Diamond II",
-      "division": 2
-    },
-    {
-      "date": "2025-05-26T00:00:00+00:00",
       "mmr": 891,
       "rank": "Diamond II",
       "division": 2
@@ -561,19 +417,7 @@
       "division": 3
     },
     {
-      "date": "2025-06-03T00:00:00+00:00",
-      "mmr": 908,
-      "rank": "Diamond II",
-      "division": 3
-    },
-    {
       "date": "2025-06-04T00:00:00+00:00",
-      "mmr": 864,
-      "rank": "Diamond II",
-      "division": 1
-    },
-    {
-      "date": "2025-07-12T00:00:00+00:00",
       "mmr": 864,
       "rank": "Diamond II",
       "division": 1
@@ -633,12 +477,6 @@
       "division": 3
     },
     {
-      "date": "2025-07-22T00:00:00+00:00",
-      "mmr": 911,
-      "rank": "Diamond II",
-      "division": 3
-    },
-    {
       "date": "2025-07-23T00:00:00+00:00",
       "mmr": 868,
       "rank": "Diamond II",
@@ -646,6 +484,12 @@
     },
     {
       "date": "2025-07-24T00:00:00+00:00",
+      "mmr": 851,
+      "rank": "Diamond I",
+      "division": 4
+    },
+    {
+      "date": "2025-07-25T00:00:00+00:00",
       "mmr": 851,
       "rank": "Diamond I",
       "division": 4
@@ -681,7 +525,7 @@
       "division": 4
     },
     {
-      "date": "2025-08-02T00:00:00+00:00",
+      "date": "2025-07-31T00:00:00+00:00",
       "mmr": 928,
       "rank": "Diamond II",
       "division": 4
@@ -699,31 +543,13 @@
       "division": 1
     },
     {
-      "date": "2025-08-06T00:00:00+00:00",
-      "mmr": 950,
-      "rank": "Diamond III",
-      "division": 1
-    },
-    {
       "date": "2025-08-07T00:00:00+00:00",
       "mmr": 921,
       "rank": "Diamond II",
       "division": 4
     },
     {
-      "date": "2025-08-08T00:00:00+00:00",
-      "mmr": 921,
-      "rank": "Diamond II",
-      "division": 4
-    },
-    {
       "date": "2025-08-09T00:00:00+00:00",
-      "mmr": 986,
-      "rank": "Diamond III",
-      "division": 3
-    },
-    {
-      "date": "2025-08-14T00:00:00+00:00",
       "mmr": 986,
       "rank": "Diamond III",
       "division": 3
@@ -742,6 +568,12 @@
     },
     {
       "date": "2025-08-17T00:00:00+00:00",
+      "mmr": 1000,
+      "rank": "Diamond III",
+      "division": 4
+    },
+    {
+      "date": "2025-08-18T00:00:00+00:00",
       "mmr": 1000,
       "rank": "Diamond III",
       "division": 4
@@ -807,7 +639,7 @@
       "division": 1
     },
     {
-      "date": "2025-09-06T00:00:00+00:00",
+      "date": "2025-08-29T00:00:00+00:00",
       "mmr": 1016,
       "rank": "Champion I",
       "division": 1
@@ -825,12 +657,6 @@
       "division": 2
     },
     {
-      "date": "2025-09-12T00:00:00+00:00",
-      "mmr": 1046,
-      "rank": "Champion I",
-      "division": 2
-    },
-    {
       "date": "2025-09-13T00:00:00+00:00",
       "mmr": 1013,
       "rank": "Diamond III",
@@ -843,19 +669,7 @@
       "division": 3
     },
     {
-      "date": "2025-09-15T00:00:00+00:00",
-      "mmr": 987,
-      "rank": "Diamond III",
-      "division": 3
-    },
-    {
       "date": "2025-09-16T00:00:00+00:00",
-      "mmr": 989,
-      "rank": "Diamond III",
-      "division": 3
-    },
-    {
-      "date": "2025-09-22T00:00:00+00:00",
       "mmr": 989,
       "rank": "Diamond III",
       "division": 3
@@ -867,19 +681,7 @@
       "division": 1
     },
     {
-      "date": "2025-10-03T00:00:00+00:00",
-      "mmr": 936,
-      "rank": "Diamond III",
-      "division": 1
-    },
-    {
       "date": "2025-10-04T00:00:00+00:00",
-      "mmr": 859,
-      "rank": "Diamond II",
-      "division": 1
-    },
-    {
-      "date": "2025-10-09T00:00:00+00:00",
       "mmr": 859,
       "rank": "Diamond II",
       "division": 1
@@ -891,19 +693,7 @@
       "division": 3
     },
     {
-      "date": "2025-10-19T00:00:00+00:00",
-      "mmr": 911,
-      "rank": "Diamond II",
-      "division": 3
-    },
-    {
       "date": "2025-10-20T00:00:00+00:00",
-      "mmr": 900,
-      "rank": "Diamond II",
-      "division": 3
-    },
-    {
-      "date": "2025-10-27T00:00:00+00:00",
       "mmr": 900,
       "rank": "Diamond II",
       "division": 3
@@ -916,12 +706,6 @@
     },
     {
       "date": "2025-10-29T00:00:00+00:00",
-      "mmr": 870,
-      "rank": "Diamond II",
-      "division": 1
-    },
-    {
-      "date": "2025-11-05T00:00:00+00:00",
       "mmr": 870,
       "rank": "Diamond II",
       "division": 1
@@ -940,12 +724,6 @@
     },
     {
       "date": "2025-11-08T00:00:00+00:00",
-      "mmr": 828,
-      "rank": "Diamond I",
-      "division": 3
-    },
-    {
-      "date": "2025-11-10T00:00:00+00:00",
       "mmr": 828,
       "rank": "Diamond I",
       "division": 3
@@ -981,7 +759,43 @@
       "division": 3
     },
     {
-      "date": "2025-11-23T00:00:00+00:00",
+      "date": "2025-11-16T00:00:00+00:00",
+      "mmr": 832,
+      "rank": "Diamond I",
+      "division": 3
+    },
+    {
+      "date": "2025-11-17T00:00:00+00:00",
+      "mmr": 832,
+      "rank": "Diamond I",
+      "division": 3
+    },
+    {
+      "date": "2025-11-18T00:00:00+00:00",
+      "mmr": 832,
+      "rank": "Diamond I",
+      "division": 3
+    },
+    {
+      "date": "2025-11-19T00:00:00+00:00",
+      "mmr": 832,
+      "rank": "Diamond I",
+      "division": 3
+    },
+    {
+      "date": "2025-11-20T00:00:00+00:00",
+      "mmr": 832,
+      "rank": "Diamond I",
+      "division": 3
+    },
+    {
+      "date": "2025-11-21T00:00:00+00:00",
+      "mmr": 832,
+      "rank": "Diamond I",
+      "division": 3
+    },
+    {
+      "date": "2025-11-22T00:00:00+00:00",
       "mmr": 832,
       "rank": "Diamond I",
       "division": 3
@@ -1023,12 +837,6 @@
       "division": 2
     },
     {
-      "date": "2025-11-30T00:00:00+00:00",
-      "mmr": 797,
-      "rank": "Diamond I",
-      "division": 2
-    },
-    {
       "date": "2025-12-01T00:00:00+00:00",
       "mmr": 955,
       "rank": "Diamond III",
@@ -1036,12 +844,6 @@
     },
     {
       "date": "2025-12-02T00:00:00+00:00",
-      "mmr": 964,
-      "rank": "Diamond III",
-      "division": 2
-    },
-    {
-      "date": "2025-12-08T00:00:00+00:00",
       "mmr": 964,
       "rank": "Diamond III",
       "division": 2
@@ -1059,19 +861,13 @@
       "division": 4
     },
     {
-      "date": "2025-12-14T00:00:00+00:00",
-      "mmr": 925,
-      "rank": "Diamond II",
-      "division": 4
-    },
-    {
       "date": "2025-12-15T00:00:00+00:00",
       "mmr": 943,
       "rank": "Diamond III",
       "division": 1
     },
     {
-      "date": "2025-12-22T00:00:00+00:00",
+      "date": "2025-12-18T00:00:00+00:00",
       "mmr": 943,
       "rank": "Diamond III",
       "division": 1
@@ -1083,7 +879,13 @@
       "division": 1
     },
     {
-      "date": "2025-12-28T00:00:00+00:00",
+      "date": "2025-12-24T00:00:00+00:00",
+      "mmr": 954,
+      "rank": "Diamond III",
+      "division": 1
+    },
+    {
+      "date": "2025-12-26T00:00:00+00:00",
       "mmr": 954,
       "rank": "Diamond III",
       "division": 1
@@ -1095,19 +897,7 @@
       "division": 1
     },
     {
-      "date": "2025-12-31T00:00:00+00:00",
-      "mmr": 941,
-      "rank": "Diamond III",
-      "division": 1
-    },
-    {
       "date": "2026-01-01T00:00:00+00:00",
-      "mmr": 923,
-      "rank": "Diamond II",
-      "division": 4
-    },
-    {
-      "date": "2026-01-03T00:00:00+00:00",
       "mmr": 923,
       "rank": "Diamond II",
       "division": 4
@@ -1119,19 +909,7 @@
       "division": 3
     },
     {
-      "date": "2026-01-12T00:00:00+00:00",
-      "mmr": 904,
-      "rank": "Diamond II",
-      "division": 3
-    },
-    {
       "date": "2026-01-13T00:00:00+00:00",
-      "mmr": 949,
-      "rank": "Diamond III",
-      "division": 1
-    },
-    {
-      "date": "2026-01-18T00:00:00+00:00",
       "mmr": 949,
       "rank": "Diamond III",
       "division": 1
@@ -1143,19 +921,7 @@
       "division": 2
     },
     {
-      "date": "2026-01-20T00:00:00+00:00",
-      "mmr": 973,
-      "rank": "Diamond III",
-      "division": 2
-    },
-    {
       "date": "2026-01-21T00:00:00+00:00",
-      "mmr": 963,
-      "rank": "Diamond III",
-      "division": 2
-    },
-    {
-      "date": "2026-01-23T00:00:00+00:00",
       "mmr": 963,
       "rank": "Diamond III",
       "division": 2
@@ -1168,6 +934,12 @@
     },
     {
       "date": "2026-01-25T00:00:00+00:00",
+      "mmr": 1061,
+      "rank": "Champion I",
+      "division": 3
+    },
+    {
+      "date": "2026-01-26T00:00:00+00:00",
       "mmr": 1061,
       "rank": "Champion I",
       "division": 3
@@ -1197,11 +969,23 @@
       "division": 3
     },
     {
+      "date": "2026-01-31T00:00:00+00:00",
+      "mmr": 1074,
+      "rank": "Champion I",
+      "division": 3
+    },
+    {
       "date": "2026-02-02T00:00:00+00:00",
       "mmr": 1074,
       "rank": "Champion I",
       "division": 3
+    },
+    {
+      "date": "2026-02-03T00:00:00+00:00",
+      "mmr": 1068,
+      "rank": "Champion I",
+      "division": 3
     }
   ],
-  "lastUpdated": "2026-02-02T22:00:00.020958Z"
+  "lastUpdated": "2026-02-03T05:08:00.452175Z"
 }
