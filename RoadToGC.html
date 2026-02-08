@@ -21,7 +21,7 @@
 
   <link rel="stylesheet" href="css/tokens.css?v=mb7" />
   <link rel="stylesheet" href="css/base.css?v=mb7" />
-  <link rel="stylesheet" href="css/mmr-tracker.css?v=mb11" />
+  <link rel="stylesheet" href="css/mmr-tracker.css?v=mb13" />
 
   <meta name="description" content="MaGnetBear's Rocket League MMR progression tracker - Road to Grand Champion!" />
 </head>
@@ -75,7 +75,14 @@
       <!-- Chart -->
       <div class="mmr-chart-wrapper">
         <div class="mmr-chart-header">
-          <h2 class="mmr-chart-title">MMR History</h2>
+          <div class="mmr-chart-header-left">
+            <img 
+              class="controller-header-icon" 
+              src="assets/img/controller_sm.png" 
+              alt="Controller acquired"
+            />
+            <h2 class="mmr-chart-title">MMR History</h2>
+          </div>
         </div>
 
         <div class="mmr-chart-container" id="chartContainer">
@@ -133,6 +140,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/modules/mmr-chart.js?v=mb11"></script>
+  <script type="module" src="js/modules/mmr-chart.js?v=mb13"></script>
 </body>
 </html>

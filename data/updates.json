@@ -1,6 +1,11 @@
 {
   "items": [
     {
+      "date": "2026-02-08",
+      "title": "MMR-Chart Rendering Issue Corrected",
+      "body": "Fixed rendering artifacts where chart elements extended beyond boundaries at various zoom levels."
+    },
+    {
       "date": "2026-01-28",
       "title": "Site update",
       "body": "Reworked the campaign page layout and added an Updates + Posts feed so the public-facing status is easier to track.",

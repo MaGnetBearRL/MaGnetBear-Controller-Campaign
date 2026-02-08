@@ -262,7 +262,26 @@ function inverseScaleY(y) {
 function renderChart() {
   const svg = elements.chartSvg;
   svg.innerHTML = '';
-  
+
+
+  // --- ClipPath: restrict drawing to the inner plot area (inside padding) ---
+  const defs = createSvgElement('defs');
+  const clipPath = createSvgElement('clipPath', { id: 'mmrPlotClip' });
+
+
+  const clipRect = createSvgElement('rect', {
+    x: CONFIG.padding.left,
+    y: CONFIG.padding.top,
+    width: chartDimensions.width - CONFIG.padding.left - CONFIG.padding.right,
+    height: chartDimensions.height - CONFIG.padding.top - CONFIG.padding.bottom
+  });
+
+
+  clipPath.appendChild(clipRect);
+  defs.appendChild(clipPath);
+  svg.appendChild(defs);
+
+
   // Create groups for layering
   const bandsGroup = createSvgElement('g', { class: 'bands-group' });
   const gridGroup = createSvgElement('g', { class: 'grid-group' });
@@ -271,7 +290,8 @@ function renderChart() {
   const pointsGroup = createSvgElement('g', { class: 'points-group' });
   const controllerDotGroup = createSvgElement('g', { class: 'controller-dot-group' }); // Foreground dot
   const axisGroup = createSvgElement('g', { class: 'axis-group' });
-  
+
+
   // Render each layer
   renderRankBands(bandsGroup);
   renderGrid(gridGroup);
@@ -280,16 +300,25 @@ function renderChart() {
   renderDataPoints(pointsGroup);
   renderControllerDotForeground(controllerDotGroup); // Foreground: solid dot on top
   renderAxes(axisGroup);
-  
-  // Append groups in order (controller dot after points = on top)
-  svg.appendChild(bandsGroup);
-  svg.appendChild(gridGroup);
-  svg.appendChild(controllerMarkerGroup);
-  svg.appendChild(lineGroup);
-  svg.appendChild(pointsGroup);
-  svg.appendChild(controllerDotGroup); // Dot renders on top of data points
+
+
+  // --- Plot group gets clipped; axis group does NOT ---
+  const plotGroup = createSvgElement('g', { 'clip-path': 'url(#mmrPlotClip)' });
+
+
+  // Append plot layers in order (controller dot after points = on top)
+  plotGroup.appendChild(bandsGroup);
+  plotGroup.appendChild(gridGroup);
+  plotGroup.appendChild(controllerMarkerGroup);
+  plotGroup.appendChild(lineGroup);
+  plotGroup.appendChild(pointsGroup);
+  plotGroup.appendChild(controllerDotGroup);
+
+
+  svg.appendChild(plotGroup);
   svg.appendChild(axisGroup);
-  
+
+
   // Render controller image overlay (HTML, not SVG)
   renderControllerImage();
 }
@@ -378,14 +407,37 @@ function renderGrid(group) {
 
 /**
  * Render the MMR line
+ * Only renders points within the visible view range (plus one on each side for edge continuity)
  */
 function renderLine(group) {
-  const points = chartData.dataPoints.map(d => ({
+  const visiblePoints = [];
+  let addedBefore = false;
+  
+  for (let i = 0; i < chartData.dataPoints.length; i++) {
+    const d = chartData.dataPoints[i];
+    const date = new Date(d.date);
+    
+    if (date >= viewRange.start && date <= viewRange.end) {
+      // Add one point before visible range for smooth line entry
+      if (!addedBefore && i > 0) {
+        const prev = chartData.dataPoints[i - 1];
+        visiblePoints.push({ x: scaleX(prev.date), y: scaleY(prev.mmr) });
+        addedBefore = true;
+      }
+      visiblePoints.push({ x: scaleX(d.date), y: scaleY(d.mmr) });
+    } else if (date > viewRange.end && visiblePoints.length > 0) {
+      // Add one point after visible range for smooth line exit
+      visiblePoints.push({ x: scaleX(d.date), y: scaleY(d.mmr) });
+      break;
+    }
+  }
+  
+  // Fallback: if no points in range, render all (shouldn't happen normally)
+  const points = visiblePoints.length > 0 ? visiblePoints : chartData.dataPoints.map(d => ({
     x: scaleX(d.date),
     y: scaleY(d.mmr)
   }));
   
-  // Create smooth path using cardinal spline
   const pathD = createSmoothPath(points);
   
   // Glow effect
@@ -421,9 +473,15 @@ function createSmoothPath(points) {
 
 /**
  * Render data points
+ * Only renders points within the visible view range
  */
 function renderDataPoints(group) {
   chartData.dataPoints.forEach((d, i) => {
+    const date = new Date(d.date);
+    
+    // Skip points outside visible range
+    if (date < viewRange.start || date > viewRange.end) return;
+    
     const x = scaleX(d.date);
     const y = scaleY(d.mmr);
     
@@ -573,35 +631,18 @@ function renderControllerDotForeground(group) {
 }
 
 /**
- * Render the controller image overlay (positioned at top of chart, above graph area)
+ * Render the controller image overlay
+ * NOTE: Controller icon is now static in HTML header, so this just cleans up old elements
  */
 function renderControllerImage() {
-  // Remove existing controller image and label if any
+  // Remove any old dynamically-created controller elements
   const existing = document.querySelector('.controller-marker-image');
   if (existing) existing.remove();
   const existingLabel = document.querySelector('.controller-marker-label');
   if (existingLabel) existingLabel.remove();
   
-  if (!elements.controllerMarkerX) {
-    console.log('[MMR Chart] Controller marker position not set, skipping image');
-    return;
-  }
-  
-  const container = elements.chartContainer;
-  if (!container) {
-    console.warn('[MMR Chart] Chart container not found for controller image');
-    return;
-  }
-  
-  // Create controller image element
-  const img = document.createElement('img');
-  img.className = 'controller-marker-image';
-  img.src = CONFIG.controllerImageUrl;
-  img.alt = 'Controller Acquired!';
-  
-  // Debug: log when image loads or fails
-  img.onload = () => console.log('[MMR Chart] Controller image loaded successfully');
-  img.onerror = () => console.error('[MMR Chart] Failed to load controller image:', CONFIG.controllerImageUrl);
+  // Controller icon is now in HTML header - no dynamic positioning needed
+  return;
   
   // Position at top of chart (above graph area, not over data)
   const imgSize = 48; // Display size
@@ -867,30 +908,41 @@ function handleMouseMove(e) {
   const rect = elements.chartContainer.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
-  
-  // Check if within chart area
-  if (x < CONFIG.padding.left || x > chartDimensions.width - CONFIG.padding.right) {
+
+
+  const leftBound = CONFIG.padding.left;
+  const rightBound = chartDimensions.width - CONFIG.padding.right;
+  const topBound = CONFIG.padding.top;
+  const bottomBound = chartDimensions.height - CONFIG.padding.bottom;
+
+
+  // Check if within inner plot area (both X and Y)
+  if (x < leftBound || x > rightBound || y < topBound || y > bottomBound) {
     handleMouseLeave();
     return;
   }
-  
-  // Get date and MMR at cursor position
+
+
+  // Get date at cursor X (zoom center logic uses x only; hover uses x for date)
   const cursorDate = inverseScaleX(x);
-  const cursorMmr = inverseScaleY(y);
-  
+
+
   // Find interpolated MMR at this date
   const interpolated = interpolateDataAtDate(cursorDate);
-  
+
+
   // Update cursor tracker position
   const trackerY = scaleY(interpolated.mmr);
   elements.cursorTracker.style.left = `${x}px`;
   elements.cursorTracker.style.top = `${trackerY}px`;
   elements.cursorTracker.classList.add('active');
-  
+
+
   // Update cursor line height
   const lineHeight = chartDimensions.height - CONFIG.padding.bottom - trackerY;
   elements.cursorLine.style.height = `${lineHeight}px`;
-  
+
+
   // Update and position tooltip
   updateTooltip(interpolated, !interpolated.exact);
   positionTooltip(x, trackerY);
