@@ -102,7 +102,7 @@ export function initContactBox(settings) {
     trapKeys(e);
   });
 
-  // Support deep-linking to campaign.html#contact
+  // Support deep-linking to index.html#contact
   function maybeOpenFromHash() {
     if (window.location.hash === "#contact") {
       openContact({ focus: false });

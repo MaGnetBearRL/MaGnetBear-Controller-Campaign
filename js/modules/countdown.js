@@ -55,12 +55,6 @@ export function initCountdown(settings) {
       from: plannedShipDate
     },
     {
-      key: "eta",
-      title: "ETA TO CONTROLLER REUNION",
-      mode: "countdown",
-      target: etaDate
-    },
-    {
       key: "s21",
       title: "COUNTDOWN TO END OF ROCKET LEAGUE SEASON 21",
       mode: "countdown",

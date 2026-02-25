@@ -1,8 +1,5 @@
 import { SETTINGS } from "./config.js";
-import { initMessageGenerator } from "./modules/message-generator.js";
-import { initSignatureWall } from "./modules/signatures.js";
 import { initUpdatesFeed } from "./modules/updates.js";
-import { initPostsFeed } from "./modules/posts.js";
 
 function log(...args) {
   if (SETTINGS.debug) console.log(...args);
@@ -30,22 +27,13 @@ safeInit("Countdown", async () => {
   return mod.initCountdown(SETTINGS);
 });
 
-// Cache-bust Share module
-safeInit("Share", async () => {
-  const mod = await import(`./modules/share.js?v=${SETTINGS.buildVersion}`);
-  return mod.initShare(SETTINGS);
-});
-safeInit("MessageGenerator", () => initMessageGenerator(SETTINGS));
-safeInit("SignatureWall", () => initSignatureWall(SETTINGS));
-
-// Cache-bust Contact module (we already learned this lesson)
+// Cache-bust Contact module
 safeInit("ContactBox", async () => {
   const mod = await import(`./modules/contact.js?v=${SETTINGS.buildVersion}`);
   return mod.initContactBox(SETTINGS);
 });
 
 safeInit("UpdatesFeed", () => initUpdatesFeed());
-safeInit("PostsFeed", () => initPostsFeed());
 
 // Cache-bust Updates modal module
 safeInit("UpdatesModal", async () => {
