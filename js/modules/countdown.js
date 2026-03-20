@@ -16,7 +16,7 @@ export function initCountdown(settings) {
 
   if (!countupEl || !titleEl) return;
 
-  const season22End = new Date("2026-04-29T12:00:00-04:00");
+  const season22End = new Date("2026-06-08T12:00:00-04:00");
 
   if (titleEl) titleEl.textContent = "COUNTDOWN TO END OF ROCKET LEAGUE SEASON 22";
   if (countEl) countEl.hidden = true;
