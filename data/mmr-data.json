@@ -57,12 +57,6 @@
   ],
   "dataPoints": [
     {
-      "date": "2025-03-30T00:00:00+00:00",
-      "mmr": 883,
-      "rank": "Diamond II",
-      "division": 2
-    },
-    {
       "date": "2025-04-01T00:00:00+00:00",
       "mmr": 873,
       "rank": "Diamond II",
@@ -877,7 +871,13 @@
       "mmr": 1009,
       "rank": "Diamond III",
       "division": 4
+    },
+    {
+      "date": "2026-03-30T00:00:00+00:00",
+      "mmr": 1009,
+      "rank": "Diamond III",
+      "division": 4
     }
   ],
-  "lastUpdated": "2026-03-29T23:01:26.951619Z"
+  "lastUpdated": "2026-03-30T02:43:39.797225Z"
 }
