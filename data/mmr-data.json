@@ -6,10 +6,10 @@
     "playlistId": 28
   },
   "currentRating": {
-    "mmr": 983,
+    "mmr": 972,
     "rank": "Diamond III",
-    "division": "Division 3",
-    "matches": 131
+    "division": "Division 2",
+    "matches": 132
   },
   "rankThresholds": {
     "gc1": 1435,
@@ -841,7 +841,13 @@
       "mmr": 983,
       "rank": "Diamond III",
       "division": 3
+    },
+    {
+      "date": "2026-04-20T00:00:00+00:00",
+      "mmr": 972,
+      "rank": "Diamond III",
+      "division": 2
     }
   ],
-  "lastUpdated": "2026-04-20T17:56:22.824371Z"
+  "lastUpdated": "2026-04-20T19:08:37.573798Z"
 }
