@@ -9,7 +9,7 @@
     "mmr": 1032,
     "rank": "Champion I",
     "division": "Division 1",
-    "matches": 132
+    "matches": 133
   },
   "rankThresholds": {
     "gc1": 1435,
@@ -847,7 +847,13 @@
       "mmr": 1032,
       "rank": "Champion I",
       "division": 1
+    },
+    {
+      "date": "2026-04-29T00:00:00+00:00",
+      "mmr": 1032,
+      "rank": "Champion I",
+      "division": 1
     }
   ],
-  "lastUpdated": "2026-04-29T05:53:45.684203Z"
+  "lastUpdated": "2026-04-29T08:14:54.947308Z"
 }
