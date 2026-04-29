@@ -6,9 +6,9 @@
     "playlistId": 28
   },
   "currentRating": {
-    "mmr": 1032,
-    "rank": "Champion I",
-    "division": "Division 1",
+    "mmr": 1015,
+    "rank": "Diamond III",
+    "division": "Division 4",
     "matches": 133
   },
   "rankThresholds": {
@@ -850,10 +850,10 @@
     },
     {
       "date": "2026-04-29T00:00:00+00:00",
-      "mmr": 1032,
-      "rank": "Champion I",
-      "division": 1
+      "mmr": 1015,
+      "rank": "Diamond III",
+      "division": 4
     }
   ],
-  "lastUpdated": "2026-04-29T19:27:57.085784Z"
+  "lastUpdated": "2026-04-29T20:40:37.497106Z"
 }
