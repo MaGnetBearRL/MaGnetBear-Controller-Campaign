@@ -6,10 +6,10 @@
     "playlistId": 28
   },
   "currentRating": {
-    "mmr": 1005,
-    "rank": "Diamond III",
+    "mmr": 1172,
+    "rank": "Champion II",
     "division": "Division 4",
-    "matches": 128
+    "matches": 129
   },
   "rankThresholds": {
     "gc1": 1435,
@@ -52,6 +52,12 @@
       "name": "Champion II",
       "minMmr": 1096,
       "maxMmr": 1176,
+      "color": "rgba(142, 89, 225, 0.25)"
+    },
+    {
+      "name": "Champion III",
+      "minMmr": 1176,
+      "maxMmr": 1435,
       "color": "rgba(142, 89, 225, 0.25)"
     }
   ],
@@ -823,7 +829,13 @@
       "mmr": 1005,
       "rank": "Diamond III",
       "division": 4
+    },
+    {
+      "date": "2026-05-18T00:00:00+00:00",
+      "mmr": 1172,
+      "rank": "Champion II",
+      "division": 4
     }
   ],
-  "lastUpdated": "2026-05-18T10:00:09.894284Z"
+  "lastUpdated": "2026-05-18T21:45:39.112054Z"
 }
