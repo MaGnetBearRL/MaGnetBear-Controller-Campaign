@@ -6,10 +6,10 @@
     "playlistId": 28
   },
   "currentRating": {
-    "mmr": 1254,
+    "mmr": 1226,
     "rank": "Champion III",
-    "division": "Division 2",
-    "matches": 128
+    "division": "Division 1",
+    "matches": 129
   },
   "rankThresholds": {
     "gc1": 1435,
@@ -62,12 +62,6 @@
     }
   ],
   "dataPoints": [
-    {
-      "date": "2025-05-25T00:00:00+00:00",
-      "mmr": 891,
-      "rank": "Diamond II",
-      "division": 2
-    },
     {
       "date": "2025-05-27T00:00:00+00:00",
       "mmr": 919,
@@ -829,7 +823,19 @@
       "mmr": 1254,
       "rank": "Champion III",
       "division": 2
+    },
+    {
+      "date": "2026-05-24T00:00:00+00:00",
+      "mmr": 1226,
+      "rank": "Champion III",
+      "division": 1
+    },
+    {
+      "date": "2026-05-25T00:00:00+00:00",
+      "mmr": 1226,
+      "rank": "Champion III",
+      "division": 1
     }
   ],
-  "lastUpdated": "2026-05-24T06:00:08.600828Z"
+  "lastUpdated": "2026-05-25T19:27:39.952584Z"
 }
