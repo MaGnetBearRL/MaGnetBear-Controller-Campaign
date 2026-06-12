@@ -6,10 +6,10 @@
     "playlistId": 28
   },
   "currentRating": {
-    "mmr": 1194,
-    "rank": "Champion III",
-    "division": "Division 1",
-    "matches": 140
+    "mmr": 1144,
+    "rank": "Champion II",
+    "division": "Division 3",
+    "matches": 141
   },
   "rankThresholds": {
     "gc1": 1435,
@@ -901,7 +901,13 @@
       "mmr": 1194,
       "rank": "Champion III",
       "division": 1
+    },
+    {
+      "date": "2026-06-12T00:00:00+00:00",
+      "mmr": 1144,
+      "rank": "Champion II",
+      "division": 3
     }
   ],
-  "lastUpdated": "2026-06-12T01:55:20.007247Z"
+  "lastUpdated": "2026-06-12T10:59:35.552724Z"
 }
